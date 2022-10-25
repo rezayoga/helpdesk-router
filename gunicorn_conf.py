@@ -11,5 +11,5 @@ worker_class = 'uvicorn.workers.UvicornWorker'
 accesslog = '/home/rezayogaswara/python_projects/helpdesk-router/access_log'
 errorlog = '/home/rezayogaswara/python_projects/helpdesk-router/error_log'
 capture_output = True
-loglevel = 'info'
+loglevel = 'error'
 reload = True
