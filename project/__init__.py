@@ -115,9 +115,6 @@ def create_app() -> FastAPI:
 
 	@app.post('/publish-payload-to-rmq')
 	async def publish_payload_to_rmq(request: Request, payload: PayloadSchema):
-		# request.app.pika_client.publish(
-		# 	jsonable_encoder(payload),
-		# )
 		await pika_client.init_connection()
 		await request.app.pika_client.publish_async(
 			jsonable_encoder(payload),
