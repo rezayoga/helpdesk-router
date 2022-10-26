@@ -67,6 +67,7 @@ def create_app() -> FastAPI:
 	                var token = select_object.value;
 	                if (token !== undefined) {
 		                ws = new WebSocket("wss://notifier.rezayogaswara.dev/notification/" + token);
+		                // ws = new WebSocket("ws://localhost:8005/notification/" + token);
 		                ws.onmessage = function(event) {
 		                    console.log(event.data);
 		                    document.getElementById('message').innerHTML = document.getElementById('message').innerHTML 
