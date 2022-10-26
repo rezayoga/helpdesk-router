@@ -4,10 +4,9 @@ from multiprocessing import cpu_count
 bind = 'unix:/home/rezayogaswara/python_projects/helpdesk-router.sock'
 
 # Worker Options
-workers = cpu_count() + 1
+# workers = cpu_count() + 1
+workers = 1
 worker_class = 'uvicorn.workers.UvicornWorker'
-print_config = True
-check_config = True
 
 # Logging Options
 accesslog = '/home/rezayogaswara/python_projects/helpdesk-router/access_log'
