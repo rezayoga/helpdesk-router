@@ -17,10 +17,6 @@ from project.schemas import Payload as PayloadSchema
 logger = logging.getLogger(__name__)  # __name__ = "project"
 
 
-async def send_personal_message(data: PayloadSchema, websocket: WebSocket):
-	await websocket.send_json(jsonable_encoder(data))
-
-
 class WebSocketManager:
 	def __init__(self):
 		self.active_connections: Dict[str, WebSocket] = {}
@@ -54,23 +50,11 @@ class WebSocketManager:
 		if exist:
 			await exist.close()
 			self.active_connections[user_id] = websocket
-
-			logger.info("===============================================================")
-			logger.info(f"Reconnected: {user_id}")
-			logger.info("===============================================================")
-
 		else:
 			self.active_connections[user_id] = websocket
 
-			logger.info("===============================================================")
-			logger.info(f"Connected: {user_id}")
-			logger.info("===============================================================")
-
 	def disconnect(self, user_id: str):
 		self.active_connections.pop(user_id)
-		logger.info("===============================================================")
-		logger.info(f"Disconnected: {user_id}")
-		logger.info("===============================================================")
 
 
 class PikaClient:
