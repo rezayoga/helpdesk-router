@@ -1,8 +1,8 @@
 import asyncio
 import json
-import logging
 import logging.config
 import os
+from typing import Optional, Any
 
 import aioredis
 from aio_pika.abc import AbstractIncomingMessage
@@ -10,8 +10,10 @@ from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
-from fastapi.websockets import WebSocket, WebSocketDisconnect
+from fastapi.websockets import WebSocket
 from pydantic import parse_obj_as
+from starlette.endpoints import WebSocketEndpoint
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from project.celery_utils import create_celery
 from project.config import settings
@@ -38,7 +40,29 @@ def create_app() -> FastAPI:
 		              "email": "reza.yoga@gmail.com",
 	              }, )
 
-	app.debug = True
+	class RoomEventMiddleware:  # pylint: disable=too-few-public-methods
+		"""Middleware for providing a global :class:`~.WebSocketManager` instance to both HTTP
+		and WebSocket scopes.
+
+		Although it might seem odd to load the broadcast interface like this (as
+		opposed to, e.g. providing a global) this both mimics the pattern
+		established by starlette's existing DatabaseMiddlware, and describes a
+		pattern for installing an arbitrary broadcast backend (Redis PUB-SUB,
+		Postgres LISTEN/NOTIFY, etc) and providing it at the level of an individual
+		request.
+		"""
+
+		def __init__(self, app: ASGIApp):
+			self._app = app
+			self._room = WebSocketManager()
+
+		async def __call__(self, scope: Scope, receive: Receive, send: Send):
+			if scope["type"] in ("lifespan", "http", "websocket"):
+				scope["room"] = self._room
+			await self._app(scope, receive, send)
+
+	app.add_middleware(RoomEventMiddleware)
+
 	app.celery_app = create_celery()
 
 	html_broadcast = """
@@ -47,9 +71,9 @@ def create_app() -> FastAPI:
 	    <head>
 	        <title>Clients</title>
 	    </head>
-	    <body onload="connect(event)">
+	    <body onload="add_user(event)">
 	        <h1 id="h1-title">Clients</h1>
-	        <select user_id="select_token" style="width:30%" onchange="connect(this)">
+	        <select user_id="select_token" style="width:30%" onchange="add_user(this)">
 	          <option selected="selected" value="-">Select Token</option>
 			  <option value="user1.0cc175b9c0f1b6a831c399e269772661">Token #1 (Valid)</option>
 			  <option value="user2.92eb5ffee6ae2fec3ad71c777531578f">Token #2 (Valid)</option>
@@ -63,11 +87,12 @@ def create_app() -> FastAPI:
 	        <script>
 	            var ws = null;
 	            var token = null;
-	            function connect(select_object) {
+	            function add_user(select_object) {
 	                var token = select_object.value;
-	                if (token !== undefined) {
-		                // ws = new WebSocket("wss://notifier.rezayogaswara.dev/notification/" + token);
-		                ws = new WebSocket("ws://localhost:8005/notification/" + token);
+	                if (token !== undefined) {		                
+	                	// notifier.rezayogaswara.dev
+		                const ws_url = '/ws';
+					    const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://localhost:8005' + ws_url);
 		                ws.onmessage = function(event) {
 		                    console.log(event.data);
 		                    document.getElementById('message').innerHTML = document.getElementById('message').innerHTML 
@@ -84,26 +109,75 @@ def create_app() -> FastAPI:
 	def log_incoming_message(message: dict):
 		logger.info(f"Received message: {message}")
 
-	websocket_manager = WebSocketManager()
 	pika_client = PikaClient(log_incoming_message)
 
 	@app.get("/")
 	async def get():
 		return HTMLResponse(html_broadcast)
 
-	@app.websocket("/notification/{token}")
-	async def notification(websocket: WebSocket, token: str):
-		user_validation = await validate_auth_token(token)
+	@classmethod
+	@app.websocket_route("/ws", name="ws")
+	class WebSocketApp(WebSocketEndpoint):
+		"""Live connection to the global :class:`~.Room` instance, via WebSocket.
+		    """
 
-		if user_validation.is_validated:
-			await websocket_manager.connect(user_validation.user_id, websocket)
-			try:
-				while True:
-					data = await websocket.receive_json()
-					websocket_manager.broadcast(data)
-			except WebSocketDisconnect:
-				websocket_manager.disconnect(user_validation.user_id)
-				await websocket_manager.notify_user_left(user_validation.user_id)
+		encoding: str = "text"
+		session_name: str = ""
+		count: int = 0
+
+		def __init__(self, *args, **kwargs):
+			super().__init__(*args, **kwargs)
+			self.room: Optional[WebSocketManager] = None
+			self.user_id: Optional[str] = None
+
+		@classmethod
+		def get_next_user_id(cls):
+			"""Returns monotonically increasing numbered usernames in the form
+				'user_[number]'
+			"""
+			user_id: str = f"user_{cls.count}"
+			cls.count += 1
+			return user_id
+
+		async def on_connect(self, websocket):
+			"""Handle a new connection.
+
+			New users are assigned a user ID and notified of the room's connected
+			users. The other connected users are notified of the new user's arrival,
+			and finally the new user is added to the global :class:`~.Room` instance.
+			"""
+			logger.info("Connecting new user...")
+			room: Optional[WebSocketManager] = self.scope.get("room")
+			if room is None:
+				raise RuntimeError(f"Global `Room` instance unavailable!")
+			self.room = room
+			self.user_id = self.get_next_user_id()
+			await websocket.accept()
+			await websocket.send_json(
+				{"type": "ROOM_JOIN", "data": {"user_id": self.user_id}}
+			)
+			await self.room.broadcast_user_joined(self.user_id)
+			self.room.add_user(self.user_id, websocket)
+
+		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
+			"""Disconnect the user, removing them from the :class:`~.Room`, and
+			notifying the other users of their departure.
+			"""
+			if self.user_id is None:
+				raise RuntimeError(
+					"RoomLive.on_disconnect() called without a valid user_id"
+				)
+			self.room.remove_user(self.user_id)
+			await self.room.broadcast_user_left(self.user_id)
+
+		async def on_receive(self, _websocket: WebSocket, msg: Any):
+			"""Handle incoming message: `msg` is forwarded straight to `broadcast_message`.
+			"""
+			if self.user_id is None:
+				raise RuntimeError("RoomLive.on_receive() called without a valid user_id")
+			if not isinstance(msg, str):
+				raise ValueError(f"RoomLive.on_receive() passed unhandleable data: {msg}")
+			await self.room.broadcast_message(self.user_id, msg)
 
 	async def validate_auth_token(auth_token: str) -> UserValidation:
 		logger.info(f"Validating token: {auth_token}")
@@ -132,24 +206,20 @@ def create_app() -> FastAPI:
 		return {"status": "consuming"}
 
 	async def on_message(message: AbstractIncomingMessage) -> None:
-		async with message.process():
-			key_list = list(websocket_manager.active_connections.keys())
-			payload = parse_obj_as(PayloadSchema, json.loads(message.body))
-
-			if payload.broadcast:
-				await websocket_manager.broadcast(jsonable_encoder(payload))
-			else:
-				r = sorted(payload.recipients)
-				active_user_in_websocket = sorted(key_list)
-				intersection = set(r).intersection(set(active_user_in_websocket))
-				if len(intersection) > 0:
-					for user_id in intersection:
-						await websocket_manager.send_message_by_user_id(user_id, jsonable_encoder(payload))
-
-	@app.post("/broadcast", response_model=PayloadSchema)
-	async def post_broadcast(data: PayloadSchema):
-		await websocket_manager.broadcast(data)
-		return data
+		# async with message.process():
+		# 	key_list = list(websocket_manager.active_connections.keys())
+		# 	payload = parse_obj_as(PayloadSchema, json.loads(message.body))
+		#
+		# 	if payload.broadcast:
+		# 		await websocket_manager.broadcast(jsonable_encoder(payload))
+		# 	else:
+		# 		r = sorted(payload.recipients)
+		# 		active_user_in_websocket = sorted(key_list)
+		# 		intersection = set(r).intersection(set(active_user_in_websocket))
+		# 		if len(intersection) > 0:
+		# 			for user_id in intersection:
+		# 				await websocket_manager.send_message_by_user_id(user_id, jsonable_encoder(payload))
+		pass
 
 	@app.on_event("startup")
 	async def startup():

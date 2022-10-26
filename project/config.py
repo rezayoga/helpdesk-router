@@ -26,7 +26,6 @@ class BaseConfig:
 	                                                     "service.queue.payload.consume")
 
 	RABBITMQ_SERVICE_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_QUEUE_NAME", "service.queue.payload")
-
 	CELERY_BEAT_SCHEDULE: dict = {
 		"task-monitor-external-rabbitmq-queues": {
 			"task": "monitor_external_rabbitmq_queues",
