@@ -34,5 +34,6 @@ jobs:
             echo ----------------------------------------------
             docker-compose up -d --build
             echo ----------------------------------------------
+            sudo nginx -t
             sudo systemctl reload nginx
             echo ----------------------------------------------
