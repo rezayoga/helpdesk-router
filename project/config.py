@@ -26,12 +26,12 @@ class BaseConfig:
 	                                                     "service.queue.payload.consume")
 
 	RABBITMQ_SERVICE_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_QUEUE_NAME", "service.queue.payload")
-	CELERY_BEAT_SCHEDULE: dict = {
-		# "task-monitor-external-rabbitmq-queues": {
-		# 	"task": "monitor_external_rabbitmq_queues",
-		# 	"schedule": 5.0,  # * seconds
-		# },
-	}
+	# CELERY_BEAT_SCHEDULE: dict = {
+	# 	"task-monitor-external-rabbitmq-queues": {
+	# 		"task": "monitor_external_rabbitmq_queues",
+	# 		"schedule": 5.0,  # * seconds
+	# 	},
+	# }
 
 	CELERY_TASK_DEFAULT_QUEUE: str = "default"
 
