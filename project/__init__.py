@@ -89,7 +89,7 @@ def create_app() -> FastAPI:
 	                	// notifier.rezayogaswara.dev
 	                	// localhost:8005
 		                const ws_url = '/notification/' + token;
-					    const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://notifier.rezayogaswara.dev' + ws_url);
+					    const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://localhost:8005' + ws_url);
 		                ws.onmessage = function(event) {
 		                    console.log(event.data);
 		                    document.getElementById('message').innerHTML = document.getElementById('message').innerHTML 
@@ -126,10 +126,10 @@ def create_app() -> FastAPI:
 
 		async def on_connect(self, websocket):
 			global wm
-			wm = self.scope.get("websocket_manager")
-			if wm is None:
+			_wm = self.scope.get("websocket_manager")
+			if _wm is None:
 				raise RuntimeError(f"Global `WebSocketManager` instance unavailable!")
-			self.websocket_manager = wm
+			self.websocket_manager = _wm
 			wm = self.websocket_manager
 			await websocket.accept()
 			token = websocket.path_params['token']
@@ -180,6 +180,23 @@ def create_app() -> FastAPI:
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
 		await queue.consume(on_message, no_ack=False)
 		return {"status": "Message published successfully"}
+
+	@app.post('/publish-payload-to-rmq')
+	async def publish_payload_to_rmq(request: Request, payload: PayloadSchema):
+		await pika_client.init_connection()
+		await request.app.pika_client.publish_async(
+			jsonable_encoder(payload),
+		)
+
+		return {"status": "published"}
+
+	@app.get('/consume-payload-from-rmq')
+	async def consume_payload_from_rmq(request: Request):
+		connection = await request.app.pika_client.consume(loop)
+		channel = await connection.channel()
+		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
+		await queue.consume(on_message, no_ack=False)
+		return {"status": "consuming"}
 
 	async def on_message(message: AbstractIncomingMessage) -> None:
 		async with message.process():
