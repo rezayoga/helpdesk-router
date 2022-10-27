@@ -133,7 +133,7 @@ def create_app() -> FastAPI:
 			wm = self.websocket_manager
 			await websocket.accept()
 			token = websocket.path_params['token']
-			validated_user = await self.validate_auth_token(token)
+			validated_user = await NotifierApp.validate_auth_token(token)
 			if validated_user.is_validated:
 				self.user_id = validated_user.user_id
 				logger.info(f"User {self.user_id} connected")
