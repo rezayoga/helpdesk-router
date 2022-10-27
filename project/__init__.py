@@ -89,7 +89,7 @@ def create_app() -> FastAPI:
 	                	// notifier.rezayogaswara.dev
 	                	// localhost:8005
 		                const ws_url = '/notification/' + token;
-					    const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://localhost:8005' + ws_url);
+					    const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://notifier.rezayogaswara.dev' + ws_url);
 		                ws.onmessage = function(event) {
 		                    console.log(event.data);
 		                    document.getElementById('message').innerHTML = document.getElementById('message').innerHTML 
