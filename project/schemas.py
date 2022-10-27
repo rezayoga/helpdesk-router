@@ -6,7 +6,7 @@ from pydantic import BaseModel, validator
 
 class User(BaseModel):
 	id: str
-	expired_at: str
+	expired_at: Optional[str] = None
 
 	def __hash__(self):
 		return hash("User" * self.id)
