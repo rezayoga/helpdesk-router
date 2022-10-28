@@ -59,9 +59,9 @@ class Payload(BaseModel):
 		schema_extra = {
 			"example": {
 				"broadcast": True,
-				"recipients": ["877fd59f-4092-4d2b-b458-cb99d336e7e4",
-				               "07794f90-d7f9-4a61-901f-02f7a3cfb764",
-				               "bf08d129-71f3-44d1-9d34-dd5216407875"],
+				"recipients": ["b001",
+				               "b002",
+				               "b003"],
 				"message": {"data": [
 					{"type": "text", "text": "Hello World"},
 					{"type": "image", "url": "https://example.com/image.png"},
