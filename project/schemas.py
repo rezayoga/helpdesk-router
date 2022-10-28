@@ -6,7 +6,7 @@ from pydantic import BaseModel, validator, Field
 
 class User(BaseModel):
 	id: str = Field(None, alias="ID")
-	client_id: str = Field(None, alias="ClientID")
+	client_id: str = Field(None, alias="ClientId")
 
 	def __hash__(self):
 		return hash("User" * self.id)
