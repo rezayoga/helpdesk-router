@@ -39,8 +39,8 @@ class WebSocketManager:
 		if user_id not in self._users:
 			raise ValueError(f"User {user_id} is not in the websocket_manager")
 		logger.info("Removing user %s from websocket_manager", user_id)
-		del self._users[user_id]
-		del self._user_meta[user_id]
+		# del self._users[user_id]
+		# del self._user_meta[user_id]
 		self._users.pop(user_id)
 
 	def get_user(self, user_id: str) -> Optional[User]:
