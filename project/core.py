@@ -35,13 +35,13 @@ class WebSocketManager:
 			id=user_id, client_id=client_id
 		)
 
-	async def remove_user(self, user_id: str):
+	def remove_user(self, user_id: str):
 		if user_id not in self._users:
 			raise ValueError(f"User {user_id} is not in the websocket_manager")
 		logger.info("Removing user %s from websocket_manager", user_id)
 		# del self._users[user_id]
 		# del self._user_meta[user_id]
-		await self._users[user_id].close()
+		# await self._users[user_id].close()
 		self._users.pop(user_id)
 		self._user_meta.pop(user_id)
 
