@@ -1,12 +1,12 @@
 import json
 from typing import List, Any, Optional
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, Field
 
 
 class User(BaseModel):
-	id: str
-	expired_at: Optional[str] = None
+	id: str = Field(None, alias="ID")
+	client_id: str = Field(None, alias="ClientID")
 
 	def __hash__(self):
 		return hash("User" * self.id)
@@ -22,7 +22,7 @@ class UserValidation(BaseModel):
 	"""
 
 	is_validated: bool
-	user_id: Optional[str] = None
+	user: Optional[User] = None
 
 
 class Payload(BaseModel):

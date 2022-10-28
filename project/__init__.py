@@ -135,14 +135,14 @@ def create_app() -> FastAPI:
 			token = websocket.path_params['token']
 			validated_user = await NotifierApp.validate_auth_token(token)
 			if validated_user.is_validated:
-				self.user_id = validated_user.user_id
-				# self.user_id = "user1"
+				self.user_id = validated_user.user.id
 				logger.info(f"User {self.user_id} connected")
 				await websocket.send_json(
-					{"type": "WEBSOCKET_MANAGER_JOIN", "data": {"user_id": self.user_id}}
+					{"type": "WEBSOCKET_MANAGER_JOIN", "data": {"user_id": self.user_id,
+					                                            "client_id": validated_user.user.client_id}}
 				)
 				await self.websocket_manager.broadcast_user_joined(self.user_id)
-				self.websocket_manager.add_user(self.user_id, websocket)
+				self.websocket_manager.add_user(self.user_id, validated_user.user.client_id, websocket)
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
@@ -167,8 +167,8 @@ def create_app() -> FastAPI:
 			if user is not None:
 				logger.info(f"User {user} is valid")
 				u = parse_obj_as(UserSchema, json.loads(user))
-				return UserValidation(is_validated=True, user_id=u.id)
-			return UserValidation(is_validated=False, user_id=None)
+				return UserValidation(is_validated=True, user=u)
+			return UserValidation(is_validated=False, user=None)
 
 	# @app.post('/publish-payload')
 	# async def publish_payload(request: Request, payload: PayloadSchema):
