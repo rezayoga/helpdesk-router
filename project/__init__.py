@@ -72,8 +72,8 @@ def create_app() -> FastAPI:
 	        <select user_id="select_token" style="width:30%" onchange="add_user(this)">
 	          <option selected="selected" value="-">Select Token</option>
 			  <option value="user.0cc175b9c0f1b6a831c399e269772661">Token #1 (Valid)</option>
-			  <option value="user.92eb5ffee6ae2fec3ad71c777531578f">Token #2 (Valid)</option>
-			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #3 (Valid)</option>
+			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #2 (Valid)</option>
+			  <option value="user.92eb5ffee6ae2fec3ad71c777531578f">Token #3 (Valid)</option>
 			  <option value="user.e1671797c52e15f763380b45e841ec32">Token #4 (Invalid)</option>
 			  <option value="user.8fa14cdd754f91cc6554c9e71929cce7">Token #5 (Invalid)</option>
 			</select>
