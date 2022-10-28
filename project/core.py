@@ -27,8 +27,8 @@ class WebSocketManager:
 
 	def add_user(self, user_id: str, websocket: WebSocket):
 		if user_id in self._users:
-			self.remove_user(user_id)
 			raise ValueError(f"User {user_id} is already in the websocket_manager")
+			self.remove_user(user_id)
 		logger.info("Adding user %s to websocket_manager", user_id)
 		self._users[user_id] = websocket
 		self._user_meta[user_id] = User(
