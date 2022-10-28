@@ -15,9 +15,9 @@ class BaseConfig:
 	DATABASE_URL: str = ""
 	DATABASE_CONNECT_DICT: dict = {}
 
-	CELERY_BROKER_URL: str = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/15")
-	# CELERY_RESULT_BACKEND: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/15")
-	result_backend: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/15")
+	CELERY_BROKER_URL: str = os.environ.get("CELERY_BROKER_URL", "redis://reza:reza1985@rezayogaswara.com:6379/15")
+	# CELERY_RESULT_BACKEND: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://reza:reza1985@rezayogaswara.com:6379/15")
+	result_backend: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://reza:reza1985@rezayogaswara.com:6379/15")
 
 	RABBITMQ_URL: str = os.environ.get("RABBITMQ_URL", "amqp://reza:reza@rezayogaswara.com:5672")
 	RABBITMQ_SERVICE_PUBLISH_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_PUBLISH_QUEUE_NAME",
