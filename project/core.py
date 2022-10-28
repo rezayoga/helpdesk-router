@@ -28,7 +28,6 @@ class WebSocketManager:
 	def add_user(self, user_id: str, websocket: WebSocket):
 		if user_id in self._users:
 			raise ValueError(f"User {user_id} is already in the websocket_manager")
-			self.remove_user(user_id)
 		logger.info("Adding user %s to websocket_manager", user_id)
 		self._users[user_id] = websocket
 		self._user_meta[user_id] = User(
@@ -41,7 +40,9 @@ class WebSocketManager:
 		logger.info("Removing user %s from websocket_manager", user_id)
 		# del self._users[user_id]
 		# del self._user_meta[user_id]
+		await self._users[user_id].close()
 		self._users.pop(user_id)
+		self._user_meta.pop(user_id)
 
 	def get_user(self, user_id: str) -> Optional[User]:
 		"""Get metadata on a user.
