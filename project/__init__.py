@@ -23,7 +23,6 @@ from project.schemas import User as UserSchema, Payload as PayloadSchema, UserVa
 redis = aioredis.from_url(os.environ.get('result_backend', "redis://127.0.0.1:6379/15"))
 # setup loggers
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
-from project import tasks
 
 # get root logger
 logger = logging.getLogger(__name__)  # __name__ = "project"
