@@ -16,7 +16,6 @@ from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from project.celery_utils import create_celery
 from project.config import settings
 from project.core import WebSocketManager, PikaClient
 from project.schemas import User as UserSchema, Payload as PayloadSchema, UserValidation
@@ -58,8 +57,6 @@ def create_app() -> FastAPI:
 			await self._app(scope, receive, send)
 
 	app.add_middleware(WebSocketManagerEventMiddleware)
-
-	app.celery_app = create_celery()
 
 	html_broadcast = """
 	<!DOCTYPE html>
