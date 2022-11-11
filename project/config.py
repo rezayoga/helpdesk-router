@@ -10,7 +10,7 @@ class BaseConfig:
 	# "redis://reza:reza1985@rezayogaswara.com:6379/15")
 	result_backend: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://reza:reza1985@rezayogaswara.com:6379/15")
 
-	RABBITMQ_URL: str = os.environ.get("RABBITMQ_URL", "amqp://reza:reza@rezayogaswara.com:5672")
+	RABBITMQ_URL: str = os.environ.get("RABBITMQ_URL", "amqp://rnd:password@rnd.coster.id:5672")
 	RABBITMQ_SERVICE_PUBLISH_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_PUBLISH_QUEUE_NAME",
 	                                                     "service.queue.payload.publish")
 	RABBITMQ_SERVICE_CONSUME_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_CONSUME_QUEUE_NAME",
