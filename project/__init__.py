@@ -20,7 +20,7 @@ from project.config import settings
 from project.core import WebSocketManager, PikaClient
 from project.schemas import User as UserSchema, Payload as PayloadSchema, UserValidation
 
-redis = aioredis.from_url(os.environ.get('result_backend', "redis://127.0.0.1:6379/15"))
+redis = aioredis.from_url(os.environ.get('result_backend', "redis://reza:reza1985@rezayogaswara.com:6379/15"))
 # setup loggers
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 
