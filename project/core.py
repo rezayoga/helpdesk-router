@@ -91,14 +91,14 @@ class PikaClient:
 	async def init_connection(self) -> AbstractRobustConnection:
 		"""Initiate connection to RabbitMQ"""
 		self.connection = await connect_robust(
-			os.environ.get("RABBITMQ_URL", "amqp://reza:reza@rnd.coster.id:5672")
+			os.environ.get("RABBITMQ_URL", "amqp://rnd:password@rnd.coster.id:5672")
 		)
 
 		return self.connection
 
 	async def consume(self, loop):
 		"""Setup message listener with the current running loop"""
-		connection = await connect_robust(host='rnd.coster.id', port=5672, login='reza', password='reza', loop=loop)
+		connection = await connect_robust(host='rnd.coster.id', port=5672, login='rnd', password='password', loop=loop)
 		channel = await connection.channel()
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
 		# await queue.consume(self.process_incoming_message, no_ack=False)
