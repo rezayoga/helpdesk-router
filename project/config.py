@@ -7,10 +7,10 @@ class BaseConfig:
 	DATABASE_CONNECT_DICT: dict = {}
 
 	# CELERY_RESULT_BACKEND: str = os.environ.get("CELERY_RESULT_BACKEND",
-	# "redis://reza:reza1985@103.41.204.222:6379/15")
-	result_backend: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://reza:reza1985@103.41.204.222:6379/15")
+	# "redis://reza:reza1985@rnd.coster.id:6379/15")
+	result_backend: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://reza:reza1985@rezayogaswara.com:6379/15")
 
-	RABBITMQ_URL: str = os.environ.get("RABBITMQ_URL", "amqp://reza:reza@103.41.204.222:5672")
+	RABBITMQ_URL: str = os.environ.get("RABBITMQ_URL", "amqp://reza:reza@rnd.coster.id:5672")
 	RABBITMQ_SERVICE_PUBLISH_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_PUBLISH_QUEUE_NAME",
 	                                                     "service.queue.payload.publish")
 	RABBITMQ_SERVICE_CONSUME_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_CONSUME_QUEUE_NAME",
@@ -28,7 +28,7 @@ class ProductionConfig(BaseConfig):
 
 
 class TestingConfig(BaseConfig):
-	CELERY_BROKER_URL: str = os.environ.get("CELERY_BROKER_URL", "amqp://reza:reza@103.41.204.222:5672")
+	CELERY_BROKER_URL: str = os.environ.get("CELERY_BROKER_URL", "amqp://reza:reza@rnd.coster.id:5672")
 	CELERY_RESULT_BACKEND: str = os.environ.get("CELERY_RESULT_BACKEND", "redis://127.0.0.1:6379/15")
 
 
