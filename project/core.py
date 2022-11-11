@@ -81,7 +81,6 @@ class WebSocketManager:
 	def users(self):
 		return self._users
 
-
 class PikaClient:
 
 	def __init__(self, process_callable):
