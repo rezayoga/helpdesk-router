@@ -23,7 +23,7 @@ from project.schemas import User as UserSchema, Payload as PayloadSchema, UserVa
 
 # redis = aioredis.from_url(os.environ.get('result_backend', "redis://reza:reza1985@103.41.204.222:6379/15"))
 # redis = aioredis.from_url(f"redis://:{quote_plus('Cost3rv3Redi5P@ssw0rd').replace('%', '%%')}@192.168.217.2:6379/0")
-redis = await aioredis.from_url(
+redis = aioredis.from_url(
     "redis://192.168.217.2:6379/0", password="Cost3rv3Redi5P@ssw0rd"
 )
 # setup loggers
