@@ -3,12 +3,33 @@ from typing import List, Any, Optional
 
 from pydantic import BaseModel, validator, Field
 
+
+class User_Detail(BaseModel):
+	id: str = Field(None, alias="user_id")
+	client_id: str = Field(None, alias="client_id")
+	name: str = Field(None, alias="name")
+	email: str = Field(None, alias="email")
+	phone: str = Field(None, alias="phone")
+	roles: List[str] = Field(None, alias="roles")
+	title: str = Field(None, alias="title")
+	avatar: str = Field(None, alias="avatar")
+	mobile: str = Field(None, alias="mobile")
+	modules: List[str] = Field(None, alias="modules")
+	divisions: List[str] = Field(None, alias="divisions")
+	last_name: str = Field(None, alias="last_name")
+	first_name: str = Field(None, alias="first_name")
+	display_name: str = Field(None, alias="display_name")
+
+
 class User(BaseModel):
-	id: str = Field(None, alias="ID")
-	client_id: str = Field(None, alias="ClientId")
+	access_token: Optional[str] = Field(None, alias="AccessToken")
+	expires_in: Optional[int] = Field(None, alias="ExpiresIn")
+	refresh_token: Optional[str] = Field(None, alias="RefreshToken")
+	token_type: Optional[str] = Field(None, alias="TokenType")
+	user: User_Detail = Field(None, alias="User")
 
 	def __hash__(self):
-		return hash("User" * self.id)
+		return hash("User" * self.access_token)
 
 	class Config:
 		json_encoders = {

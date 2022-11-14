@@ -67,11 +67,8 @@ def create_app() -> FastAPI:
 	        <h1 id="h1-title">Clients</h1>
 	        <select user_id="select_token" style="width:30%" onchange="add_user(this)">
 	          <option selected="selected" value="-">Select Token</option>
-			  <option value="user.0cc175b9c0f1b6a831c399e269772661">Token #1 (Valid)</option>
-			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #2 (Valid)</option>
-			  <option value="user.92eb5ffee6ae2fec3ad71c777531578f">Token #3 (Valid)</option>
-			  <option value="user.e1671797c52e15f763380b45e841ec32">Token #4 (Invalid)</option>
-			  <option value="user.8fa14cdd754f91cc6554c9e71929cce7">Token #5 (Invalid)</option>
+			  <option value="user.TLQY5Rh9QQK8hMif01qpRg">Token #1 (Valid - user.TLQY5Rh9QQK8hMif01qpRg)</option>
+			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #2 (Invalid)</option>
 			</select>
 	        <hr />
 	        <div id="token"></div>
@@ -131,14 +128,14 @@ def create_app() -> FastAPI:
 			token = websocket.path_params['token']
 			validated_user = await NotifierApp.validate_auth_token(token)
 			if validated_user.is_validated:
-				self.user_id = validated_user.user.id
+				self.user_id = validated_user.user.access_token
 				logger.info(f"User {self.user_id} connected")
 				await websocket.send_json(
 					{"type": "WEBSOCKET_JOIN", "data": {"ID": self.user_id,
-					                                    "ClientId": validated_user.user.client_id}}
+					                                    "ClientId": validated_user.user.access_token}}
 				)
 				await self.websocket_manager.broadcast_user_joined(self.user_id)
-				self.websocket_manager.add_user(self.user_id, validated_user.user.client_id, websocket)
+				self.websocket_manager.add_user(self.user_id, validated_user.user.access_token, websocket)
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
