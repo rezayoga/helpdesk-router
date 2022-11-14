@@ -132,7 +132,7 @@ def create_app() -> FastAPI:
 				logger.info(f"User {self.user_id} connected")
 				await websocket.send_json(
 					{"type": "WEBSOCKET_JOIN", "data": {"ID": self.user_id,
-					                                    "ClientId": validated_user.user}}
+					                                    "ClientId": jsonable_encoder(validated_user.user)}}
 				)
 				await self.websocket_manager.broadcast_user_joined(self.user_id)
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
