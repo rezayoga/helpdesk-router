@@ -5,20 +5,20 @@ from pydantic import BaseModel, validator, Field
 
 
 class User_Detail(BaseModel):
-	id: str = Field(None, alias="user_id")
-	client_id: str = Field(None, alias="client_id")
-	name: str = Field(None, alias="name")
-	email: str = Field(None, alias="email")
-	phone: str = Field(None, alias="phone")
-	roles: List[str] = Field(None, alias="roles")
-	title: str = Field(None, alias="title")
-	avatar: str = Field(None, alias="avatar")
-	mobile: str = Field(None, alias="mobile")
-	modules: List[str] = Field(None, alias="modules")
-	divisions: List[str] = Field(None, alias="divisions")
-	last_name: str = Field(None, alias="last_name")
-	first_name: str = Field(None, alias="first_name")
-	display_name: str = Field(None, alias="display_name")
+	id: Optional[str] = Field(None, alias="user_id")
+	client_id: Optional[str] = Field(None, alias="client_id")
+	name: Optional[str] = Field(None, alias="name")
+	email: Optional[str] = Field(None, alias="email")
+	phone: Optional[str] = Field(None, alias="phone")
+	roles: Optional[List[str]] = Field(None, alias="roles")
+	title: Optional[str] = Field(None, alias="title")
+	avatar: Optional[str] = Field(None, alias="avatar")
+	mobile: Optional[str] = Field(None, alias="mobile")
+	modules: Optional[List[str]] = Field(None, alias="modules")
+	divisions: Optional[List[str]] = Field(None, alias="divisions")
+	last_name: Optional[str] = Field(None, alias="last_name")
+	first_name: Optional[str] = Field(None, alias="first_name")
+	display_name: Optional[str] = Field(None, alias="display_name")
 
 
 class User(BaseModel):
