@@ -22,7 +22,10 @@ from project.core import WebSocketManager, PikaClient
 from project.schemas import User as UserSchema, Payload as PayloadSchema, UserValidation
 
 # redis = aioredis.from_url(os.environ.get('result_backend', "redis://reza:reza1985@103.41.204.222:6379/15"))
-redis = aioredis.from_url(f"redis://:{quote_plus('Cost3rv3Redi5P@ssw0rd').replace('%', '%%')}@192.168.217.2:6379/0")
+# redis = aioredis.from_url(f"redis://:{quote_plus('Cost3rv3Redi5P@ssw0rd').replace('%', '%%')}@192.168.217.2:6379/0")
+redis = await aioredis.from_url(
+    "redis://192.168.217.2:6379/0", password="Cost3rv3Redi5P@ssw0rd"
+)
 # setup loggers
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 
@@ -69,8 +72,9 @@ def create_app() -> FastAPI:
 	        <h1 id="h1-title">Clients</h1>
 	        <select user_id="select_token" style="width:30%" onchange="add_user(this)">
 	          <option selected="selected" value="-">Select Token</option>
-			  <option value="user.TLQY5Rh9QQK8hMif01qpRg">Token #1 (Valid - user.TLQY5Rh9QQK8hMif01qpRg)</option>
-			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #2 (Invalid)</option>
+			  <option value="user.jfD6puH8TnKLbxBtopU8RQ">Token #1 (Valid - user.jfD6puH8TnKLbxBtopU8RQ)</option>
+			  <option value="user.2LsA4HqVS5ucd4wTdmpJgQ">Token #2 (Valid - user.2LsA4HqVS5ucd4wTdmpJgQ)</option>
+			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #3 (Invalid)</option>
 			</select>
 	        <hr />
 	        <div id="token"></div>
