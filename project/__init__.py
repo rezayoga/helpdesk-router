@@ -158,7 +158,7 @@ def create_app() -> FastAPI:
 			user = await redis.get(auth_token)
 
 			if user is not None:
-				logger.info(f"User {user} is valid {type(user)}")
+				logger.info(f"User {json.loads(user)} is valid {type(json.loads(user))}")
 				u = UserSchema.parse_obj(json.loads(user))
 				logger.info(f"User {u} is valid ok {type(u)}")
 

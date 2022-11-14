@@ -28,14 +28,6 @@ class User(BaseModel):
 	token_type: Optional[str] = Field(None, alias="TokenType")
 	user: User_Detail = Field(None, alias="User")
 
-	def __hash__(self):
-		return hash("User" * self.access_token)
-
-	class Config:
-		json_encoders = {
-			Any: lambda v: v.__dict__
-		}
-
 
 class UserValidation(BaseModel):
 	"""Request model for /validate endpoint.
