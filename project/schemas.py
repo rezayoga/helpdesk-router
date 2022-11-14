@@ -26,7 +26,7 @@ class User(BaseModel):
 	expires_in: Optional[int] = Field(None, alias="ExpiresIn")
 	refresh_token: Optional[str] = Field(None, alias="RefreshToken")
 	token_type: Optional[str] = Field(None, alias="TokenType")
-	user: User_Detail = Field(None, alias="User")
+	user: Optional[User_Detail] = Field(None, alias="User")
 
 
 class UserValidation(BaseModel):
