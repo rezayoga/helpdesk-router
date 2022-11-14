@@ -1,10 +1,8 @@
 import asyncio
 import json
 import logging.config
-import os
 from typing import Optional
 
-from urllib.parse import quote_plus
 import aioredis
 from aio_pika.abc import AbstractIncomingMessage
 from fastapi import FastAPI
@@ -24,7 +22,7 @@ from project.schemas import User as UserSchema, Payload as PayloadSchema, UserVa
 # redis = aioredis.from_url(os.environ.get('result_backend', "redis://reza:reza1985@103.41.204.222:6379/15"))
 # redis = aioredis.from_url(f"redis://:{quote_plus('Cost3rv3Redi5P@ssw0rd').replace('%', '%%')}@192.168.217.2:6379/0")
 redis = aioredis.from_url(
-    "redis://192.168.217.2:6379/0", password="Cost3rv3Redi5P@ssw0rd"
+	"redis://192.168.217.2:6379/0", password="Cost3rv3Redi5P@ssw0rd"
 )
 # setup loggers
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
@@ -74,7 +72,9 @@ def create_app() -> FastAPI:
 	          <option selected="selected" value="-">Select Token</option>
 			  <option value="user.jfD6puH8TnKLbxBtopU8RQ">Token #1 (Valid - user.jfD6puH8TnKLbxBtopU8RQ)</option>
 			  <option value="user.2LsA4HqVS5ucd4wTdmpJgQ">Token #2 (Valid - user.2LsA4HqVS5ucd4wTdmpJgQ)</option>
-			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #3 (Invalid)</option>
+			  <option value="token.b4825c7863c411ed8b03c55baead42b3">Token #3 (Valid - token.b4825c7863c411ed8b03c55baead42b3)</option>
+			  <option value="token.f625487c63c211ed8b03c55baead42b3">Token #4 (Valid - token.f625487c63c211ed8b03c55baead42b3)</option>
+			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #5 (Invalid)</option>
 			</select>
 	        <hr />
 	        <div id="token"></div>
