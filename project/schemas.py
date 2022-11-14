@@ -1,32 +1,32 @@
 import json
 from typing import List, Any, Optional
 
-from pydantic import BaseModel, validator, Field
+from pydantic import BaseModel, validator
 
 
 class User_Detail(BaseModel):
-	id: str = Field(None, alias="user_id")
-	client_id: str = Field(None, alias="client_id")
-	name: str = Field(None, alias="name")
-	email: str = Field(None, alias="email")
-	phone: str = Field(None, alias="phone")
-	roles: List[str] = Field(None, alias="roles")
-	title: str = Field(None, alias="title")
-	avatar: str = Field(None, alias="avatar")
-	mobile: str = Field(None, alias="mobile")
-	modules: List[str] = Field(None, alias="modules")
-	divisions: List[str] = Field(None, alias="divisions")
-	last_name: str = Field(None, alias="last_name")
-	first_name: str = Field(None, alias="first_name")
-	display_name: str = Field(None, alias="display_name")
+	id: Optional[str]
+	client_id: Optional[str]
+	name: Optional[str]
+	email: Optional[str]
+	phone: Optional[str]
+	roles: Optional[List[str]]
+	title: Optional[str]
+	avatar: Optional[str]
+	mobile: Optional[str]
+	modules: Optional[List[str]]
+	divisions: Optional[List[str]]
+	last_name: Optional[str]
+	first_name: Optional[str]
+	display_name: Optional[str]
 
 
 class User(BaseModel):
-	access_token: str = Field(None, alias="AccessToken")
-	expires_in: int = Field(None, alias="ExpiresIn")
-	refresh_token: str = Field(None, alias="RefreshToken")
-	token_type: str = Field(None, alias="TokenType")
-	user: User_Detail = Field(None, alias="User")
+	access_token: Optional[str]
+	expires_in: Optional[int]
+	refresh_token: Optional[str]
+	token_type: Optional[str]
+	user: Optional[User_Detail]
 
 
 class UserValidation(BaseModel):
