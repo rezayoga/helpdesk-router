@@ -64,7 +64,7 @@ def create_app() -> FastAPI:
 	<!DOCTYPE html>
 	<html>
 	    <head>
-	        <title>Clients</title>
+	        <title>Websocket Subscriber Simulator</title>
 	    </head>
 	    <body onload="add_user(event)">
 	        <h1 id="h1-title">Clients</h1>
