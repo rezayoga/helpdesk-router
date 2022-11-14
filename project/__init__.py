@@ -73,7 +73,7 @@ def create_app() -> FastAPI:
 			  <option value="user.jfD6puH8TnKLbxBtopU8RQ">Token #1 (Valid - user.jfD6puH8TnKLbxBtopU8RQ)</option>
 			  <option value="user.2LsA4HqVS5ucd4wTdmpJgQ">Token #2 (Valid - user.2LsA4HqVS5ucd4wTdmpJgQ)</option>
 			  <option value="token.b4825c7863c411ed8b03c55baead42b3">Token #3 (Valid - token.b4825c7863c411ed8b03c55baead42b3)</option>
-			  <option value="token.f625487c63c211ed8b03c55baead42b3">Token #4 (Valid - token.f625487c63c211ed8b03c55baead42b3)</option>
+			  <option value="user.GLBHlkW3QSqSDgZV3sKZmA">Token #4 (Valid - user.GLBHlkW3QSqSDgZV3sKZmA)</option>
 			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #5 (Invalid)</option>
 			</select>
 	        <hr />
