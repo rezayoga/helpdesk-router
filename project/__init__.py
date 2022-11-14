@@ -159,7 +159,7 @@ def create_app() -> FastAPI:
 
 			if user is not None:
 				logger.info(f"User {user} is valid {type(user)}")
-				u = parse_obj_as(UserSchema, json.loads(user))
+				u = parse_obj_as(UserSchema, json.dumps(user))
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
 
