@@ -16,7 +16,6 @@ from project.schemas import Payload as PayloadSchema, User
 
 logger = logging.getLogger(__name__)  # __name__ = "project"
 
-
 class WebSocketManager:
 	def __init__(self):
 		self._users: Dict[str, WebSocket] = {}

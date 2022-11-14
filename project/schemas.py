@@ -3,7 +3,6 @@ from typing import List, Any, Optional
 
 from pydantic import BaseModel, validator, Field
 
-
 class User(BaseModel):
 	id: str = Field(None, alias="ID")
 	client_id: str = Field(None, alias="ClientId")
