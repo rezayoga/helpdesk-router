@@ -5,28 +5,28 @@ from pydantic import BaseModel, validator, Field
 
 
 class User_Detail(BaseModel):
-	id: Optional[str] = Field(None, alias="user_id")
-	client_id: Optional[str] = Field(None, alias="client_id")
-	name: Optional[str] = Field(None, alias="name")
-	email: Optional[str] = Field(None, alias="email")
-	phone: Optional[str] = Field(None, alias="phone")
-	roles: Optional[List[str]] = Field(None, alias="roles")
-	title: Optional[str] = Field(None, alias="title")
-	avatar: Optional[str] = Field(None, alias="avatar")
-	mobile: Optional[str] = Field(None, alias="mobile")
-	modules: Optional[List[str]] = Field(None, alias="modules")
-	divisions: Optional[List[str]] = Field(None, alias="divisions")
-	last_name: Optional[str] = Field(None, alias="last_name")
-	first_name: Optional[str] = Field(None, alias="first_name")
-	display_name: Optional[str] = Field(None, alias="display_name")
+	id: str = Field(None, alias="user_id")
+	client_id: str = Field(None, alias="client_id")
+	name: str = Field(None, alias="name")
+	email: str = Field(None, alias="email")
+	phone: str = Field(None, alias="phone")
+	roles: List[str] = Field(None, alias="roles")
+	title: str = Field(None, alias="title")
+	avatar: str = Field(None, alias="avatar")
+	mobile: str = Field(None, alias="mobile")
+	modules: List[str] = Field(None, alias="modules")
+	divisions: List[str] = Field(None, alias="divisions")
+	last_name: str = Field(None, alias="last_name")
+	first_name: str = Field(None, alias="first_name")
+	display_name: str = Field(None, alias="display_name")
 
 
 class User(BaseModel):
-	access_token: Optional[str] = Field(None, alias="AccessToken")
-	expires_in: Optional[int] = Field(None, alias="ExpiresIn")
-	refresh_token: Optional[str] = Field(None, alias="RefreshToken")
-	token_type: Optional[str] = Field(None, alias="TokenType")
-	user: Optional[User_Detail] = Field(None, alias="User")
+	access_token: str = Field(None, alias="AccessToken")
+	expires_in: int = Field(None, alias="ExpiresIn")
+	refresh_token: str = Field(None, alias="RefreshToken")
+	token_type: str = Field(None, alias="TokenType")
+	user: User_Detail = Field(None, alias="User")
 
 
 class UserValidation(BaseModel):
