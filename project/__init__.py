@@ -187,7 +187,7 @@ def create_app() -> FastAPI:
 
 	@app.post('/publish-payload-to-rmq')
 	async def publish_payload_to_rmq(request: Request, payload: PayloadSchema):
-		await pika_client.init_connection()
+		await pika_client.init_connection(loop=loop)
 		await request.app.pika_client.publish_async(
 			jsonable_encoder(payload),
 		)
@@ -220,7 +220,7 @@ def create_app() -> FastAPI:
 
 	@app.on_event("startup")
 	async def startup():
-		await pika_client.init_connection()
+		await pika_client.init_connection(loop)
 		task = loop.create_task(pika_client.consume(loop))
 		await task
 

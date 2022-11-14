@@ -1,9 +1,7 @@
 import json
 import logging
-import os
 import uuid
 from typing import Dict, Optional
-from urllib.parse import quote_plus
 
 import aio_pika
 import pika
@@ -89,12 +87,13 @@ class PikaClient:
 		self.connection = None
 		self.process_callable = process_callable
 
-	async def init_connection(self) -> AbstractRobustConnection:
+	async def init_connection(self, loop) -> AbstractRobustConnection:
 		"""Initiate connection to RabbitMQ"""
-		self.connection = await connect_robust(
-			os.environ.get("RABBITMQ_URL", f"amqp://admin:{quote_plus('Coster4dm1nP@ssw0rd')}@192.168.217.3:5672")
-		)
-
+		# self.connection = await connect_robust(
+		# 	os.environ.get("RABBITMQ_URL", f"amqp://admin:{quote_plus('Coster4dm1nP@ssw0rd')}@192.168.217.3:5672")
+		# )
+		self.connection = await connect_robust(host='192.168.217.3', port=5672, login='admin',
+		                                       password='Coster4dm1nP@ssw0rd', loop=loop)
 		return self.connection
 
 	async def consume(self, loop):
