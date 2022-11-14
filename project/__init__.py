@@ -128,14 +128,14 @@ def create_app() -> FastAPI:
 			token = websocket.path_params['token']
 			validated_user = await NotifierApp.validate_auth_token(token)
 			if validated_user.is_validated:
-				self.user_id = validated_user.user.access_token
+				self.user_id = validated_user.user.user.id
 				logger.info(f"User {self.user_id} connected")
 				await websocket.send_json(
 					{"type": "WEBSOCKET_JOIN", "data": {"ID": self.user_id,
-					                                    "ClientId": validated_user.user.access_token}}
+					                                    "ClientId": validated_user.user}}
 				)
 				await self.websocket_manager.broadcast_user_joined(self.user_id)
-				self.websocket_manager.add_user(self.user_id, validated_user.user.access_token, websocket)
+				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
@@ -158,15 +158,11 @@ def create_app() -> FastAPI:
 			user = await redis.get(auth_token)
 
 			if user is not None:
-				logger.info(f"User {json.loads(user)} is valid {type(json.loads(user))}")
+				# logger.info(f"User {json.loads(user)} is valid {type(json.loads(user))}")
 				# u = UserSchema(**json.loads(user.decode('utf-8')))
-
-				#u = UserSchema.parse_obj(json.loads(user.decode('utf-8')))
-
+				# u = UserSchema.parse_obj(json.loads(user.decode('utf-8')))
 				u = parse_obj_as(UserSchema, json.loads(user.decode('utf-8')))
-
-				logger.info(f"User {u} is valid ok {type(u)}")
-
+				logger.info(f"User {u} is valid {type(u)}")
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
 

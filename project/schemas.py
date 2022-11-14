@@ -5,28 +5,28 @@ from pydantic import BaseModel, validator
 
 
 class User_Detail(BaseModel):
-	id: Optional[str]
-	client_id: Optional[str]
-	name: Optional[str]
-	email: Optional[str]
-	phone: Optional[str]
-	roles: Optional[List[str]]
-	title: Optional[str]
-	avatar: Optional[str]
-	mobile: Optional[str]
-	modules: Optional[List[str]]
-	divisions: Optional[List[str]]
-	last_name: Optional[str]
-	first_name: Optional[str]
-	display_name: Optional[str]
+	id: Optional[str] = None
+	client_id: Optional[str] = None
+	name: Optional[str] = None
+	email: Optional[str] = None
+	phone: Optional[str] = None
+	roles: Optional[List[str]] = None
+	title: Optional[str] = None
+	avatar: Optional[str] = None
+	mobile: Optional[str] = None
+	modules: Optional[List[str]] = None
+	divisions: Optional[List[str]] = None
+	last_name: Optional[str] = None
+	first_name: Optional[str] = None
+	display_name: Optional[str] = None
 
 
 class User(BaseModel):
-	access_token: Optional[str]
-	expires_in: Optional[int]
-	refresh_token: Optional[str]
-	token_type: Optional[str]
-	user: Optional[User_Detail]
+	access_token: Optional[str] = None
+	expires_in: Optional[int] = None
+	refresh_token: Optional[str] = None
+	token_type: Optional[str] = None
+	user: Optional[User_Detail] = None
 
 
 class UserValidation(BaseModel):
