@@ -5,7 +5,7 @@ from typing import Optional
 
 import aioredis
 from aio_pika.abc import AbstractIncomingMessage
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
@@ -147,6 +147,7 @@ def create_app() -> FastAPI:
 				logger.info(f"Invalid token {token}")
 				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
 				await websocket.close()
+				raise HTTPException(status_code=403, detail="Invalid token")
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
