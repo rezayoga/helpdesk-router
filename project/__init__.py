@@ -5,7 +5,7 @@ from typing import Optional
 
 import aioredis
 from aio_pika.abc import AbstractIncomingMessage
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
@@ -13,9 +13,7 @@ from fastapi.websockets import WebSocket
 from pydantic import parse_obj_as
 from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import RedirectResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
-from starlette.websockets import WebSocketDisconnect
 
 from project.config import settings
 from project.core import WebSocketManager, PikaClient
@@ -150,8 +148,8 @@ def create_app() -> FastAPI:
 				logger.info(f"Invalid token {token}")
 				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
 				await websocket.close()
-				# raise WebSocketDisconnect()
-				# return RedirectResponse("wss://notification.coster.id/_/unauthorized")
+			# raise WebSocketDisconnect()
+			# return RedirectResponse("wss://notification.coster.id/_/unauthorized")
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
@@ -195,22 +193,22 @@ def create_app() -> FastAPI:
 		await queue.consume(on_message, no_ack=False)
 		return {"status": "Message published successfully"}
 
-	@app.post('/publish-payload-to-rmq')
-	async def publish_payload_to_rmq(request: Request, payload: PayloadSchema):
-		await pika_client.init_connection(loop=loop)
-		await request.app.pika_client.publish_async(
-			jsonable_encoder(payload),
-		)
-
-		return {"status": "published"}
-
-	@app.get('/consume-payload-from-rmq')
-	async def consume_payload_from_rmq(request: Request):
-		connection = await request.app.pika_client.consume(loop)
-		channel = await connection.channel()
-		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
-		await queue.consume(on_message, no_ack=False)
-		return {"status": "consuming"}
+	# @app.post('/publish-payload-to-rmq')
+	# async def publish_payload_to_rmq(request: Request, payload: PayloadSchema):
+	# 	await pika_client.init_connection(loop=loop)
+	# 	await request.app.pika_client.publish_async(
+	# 		jsonable_encoder(payload),
+	# 	)
+	#
+	# 	return {"status": "published"}
+	#
+	# @app.get('/consume-payload-from-rmq')
+	# async def consume_payload_from_rmq(request: Request):
+	# 	connection = await request.app.pika_client.consume(loop)
+	# 	channel = await connection.channel()
+	# 	queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
+	# 	await queue.consume(on_message, no_ack=False)
+	# 	return {"status": "consuming"}
 
 	async def on_message(message: AbstractIncomingMessage) -> None:
 		async with message.process():
