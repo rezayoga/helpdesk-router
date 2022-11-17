@@ -156,16 +156,16 @@ def create_app() -> FastAPI:
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
 				raise RuntimeError(
-					"WebSocketManagerLive.on_disconnect() called without a valid user_id"
+					"WebSocketManager.on_disconnect() called without a valid user_id"
 				)
 			self.websocket_manager.remove_user(self.user_id)
 			await self.websocket_manager.broadcast_user_left(self.user_id)
 
 		async def on_receive(self, _websocket: WebSocket, payload: PayloadSchema):
 			if self.user_id is None:
-				raise RuntimeError("WebSocketManagerLive.on_receive() called without a valid user_id")
+				raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
 			if not isinstance(payload, str):
-				raise ValueError(f"WebSocketManagerLive.on_receive() passed unhandleable data: {payload}")
+				raise ValueError(f"WebSocketManager.on_receive() passed unhandleable data: {payload}")
 			await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
 
 		@staticmethod
