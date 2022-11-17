@@ -14,6 +14,7 @@ from pydantic import parse_obj_as
 from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette.websockets import WebSocketDisconnect
 
 from project.config import settings
 from project.core import WebSocketManager, PikaClient
@@ -147,7 +148,7 @@ def create_app() -> FastAPI:
 				logger.info(f"Invalid token {token}")
 				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
 				await websocket.close()
-				raise HTTPException(status_code=403, detail="Invalid token")
+				raise WebSocketDisconnect(403)
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
