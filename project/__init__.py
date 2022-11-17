@@ -195,22 +195,22 @@ def create_app() -> FastAPI:
 		await queue.consume(on_message, no_ack=False)
 		return {"status": "Message published successfully"}
 
-	# @app.post('/publish-payload-to-rmq')
-	# async def publish_payload_to_rmq(request: Request, payload: PayloadSchema):
-	# 	await pika_client.init_connection(loop=loop)
-	# 	await request.app.pika_client.publish_async(
-	# 		jsonable_encoder(payload),
-	# 	)
-	#
-	# 	return {"status": "published"}
-	#
-	# @app.get('/consume-payload-from-rmq')
-	# async def consume_payload_from_rmq(request: Request):
-	# 	connection = await request.app.pika_client.consume(loop)
-	# 	channel = await connection.channel()
-	# 	queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
-	# 	await queue.consume(on_message, no_ack=False)
-	# 	return {"status": "consuming"}
+	@app.post('/publish-payload-to-rmq')
+	async def publish_payload_to_rmq(request: Request, payload: PayloadSchema):
+		await pika_client.init_connection(loop=loop)
+		await request.app.pika_client.publish_async(
+			jsonable_encoder(payload),
+		)
+
+		return {"status": "published"}
+
+	@app.get('/consume-payload-from-rmq')
+	async def consume_payload_from_rmq(request: Request):
+		connection = await request.app.pika_client.consume(loop)
+		channel = await connection.channel()
+		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
+		await queue.consume(on_message, no_ack=False)
+		return {"status": "consuming"}
 
 	async def on_message(message: AbstractIncomingMessage) -> None:
 		async with message.process():
