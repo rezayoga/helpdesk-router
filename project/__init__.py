@@ -78,6 +78,7 @@ def create_app() -> FastAPI:
 			  <option value="token.b4825c7863c411ed8b03c55baead42b3">Token #4 (Valid - token.b4825c7863c411ed8b03c55baead42b3)</option>
 			  <option value="user.GLBHlkW3QSqSDgZV3sKZmA">Token #5 (Valid - user.GLBHlkW3QSqSDgZV3sKZmA)</option>
 			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #6 (Invalid)</option>
+			  <option value="user.123/undefined">Token #7 (Invalid)</option>
 			</select>
 	        <hr />
 	        <div id="token"></div>
@@ -150,7 +151,7 @@ def create_app() -> FastAPI:
 				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
 				await websocket.close()
 				# raise WebSocketDisconnect()
-				return RedirectResponse("wss://notification.coster.id/_/unauthorized")
+				# return RedirectResponse("wss://notification.coster.id/_/unauthorized")
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
