@@ -13,6 +13,7 @@ from fastapi.websockets import WebSocket
 from pydantic import parse_obj_as
 from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 from starlette.websockets import WebSocketDisconnect
 
@@ -148,7 +149,8 @@ def create_app() -> FastAPI:
 				logger.info(f"Invalid token {token}")
 				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
 				await websocket.close()
-				raise WebSocketDisconnect(403)
+				# raise WebSocketDisconnect()
+				return RedirectResponse("wss://notification.coster.id/_/unauthorized")
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id is None:
