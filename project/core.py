@@ -6,10 +6,10 @@ from typing import Dict, Optional
 import aio_pika
 import pika
 from aio_pika import connect_robust
-from aio_pika.abc import AbstractRobustConnection
 from fastapi.encoders import jsonable_encoder
 from fastapi.websockets import WebSocket
 from rich import inspect
+
 from project import settings
 from project.schemas import Payload as PayloadSchema, User
 
@@ -84,21 +84,21 @@ class WebSocketManager:
 class PikaClient:
 
 	def __init__(self, process_callable):
-		self.connection = None
+		self.publish_queue_name = settings.RABBITMQ_SERVICE_QUEUE_NAME
+		self.connection = pika.BlockingConnection(
+			pika.ConnectionParameters('192.168.217.3', 5672, '/',
+			                          pika.PlainCredentials('admin', 'Coster4dm1nP@ssw0rd')
+			                          ))
+		self.channel = self.connection.channel()
+		self.publish_queue = self.channel.queue_declare(queue=self.publish_queue_name, durable=True, auto_delete=False)
+		self.channel = self.connection.channel()
+		self.callback_queue = self.publish_queue.method.queue
+		self.response = None
 		self.process_callable = process_callable
-
-	async def init_connection(self, loop) -> AbstractRobustConnection:
-		"""Initiate connection to RabbitMQ"""
-		# self.connection = await connect_robust(
-		# 	os.environ.get("RABBITMQ_URL", f"amqp://admin:{quote_plus('Coster4dm1nP@ssw0rd')}@192.168.217.3:5672")
-		# )
-		self.connection = await connect_robust(host='192.168.217.3', port=5672, login='admin',
-		                                       password='Coster4dm1nP@ssw0rd', loop=loop)
-		return self.connection
+		logger.info('Pika connection initialized')
 
 	async def consume(self, loop):
 		"""Setup message listener with the current running loop"""
-
 
 		connection = await connect_robust(host='192.168.217.3', port=5672, login='admin',
 		                                  password='Coster4dm1nP@ssw0rd', loop=loop)
@@ -108,6 +108,7 @@ class PikaClient:
 		channel = await connection.channel()
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
 		await queue.consume(self.process_incoming_message, no_ack=False, consumer_tag="notification")
+		logger.info('Established pika async listener')
 		return connection
 
 	async def process_incoming_message(self, message):
@@ -115,6 +116,7 @@ class PikaClient:
 		message.ack()
 		body = message.body
 		if body:
+			inspect(json.loads(body), methods=True)
 			self.process_callable(json.loads(body))
 
 		return message
