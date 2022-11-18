@@ -116,7 +116,7 @@ class PikaClient:
 		message.ack()
 		body = message.body
 		if body:
-			# inspect(json.loads(body), methods=True)
+			inspect(json.loads(body), methods=True)
 			self.process_callable(json.loads(body))
 
 		return message
