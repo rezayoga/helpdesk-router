@@ -137,7 +137,7 @@ def create_app() -> FastAPI:
 				# await self.websocket_manager.broadcast_user_joined(self.user_id)
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
 			else:
-				logger.info(f"Invalid token {token}")
+				# logger.info(f"Invalid token {token}")
 				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
 				await websocket.close()
 
@@ -173,22 +173,22 @@ def create_app() -> FastAPI:
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
 
-	def log_incoming_message(message: dict):
+	async def log_incoming_message(message: dict):
 		inspect(message, methods=False)
 		if wm is not None:
 			key_list = wm.users.keys()
 			inspect(key_list, methods=False)
-		# payload = parse_obj_as(PayloadSchema, json.loads(message))
-		#
-		# if payload.broadcast:
-		# 	wm.broadcast_all_users(jsonable_encoder(payload))
-		# else:
-		# 	r = sorted(payload.recipients)
-		# 	active_user_in_websocket = sorted(key_list)
-		# 	intersection = set(r).intersection(set(active_user_in_websocket))
-		# 	if len(intersection) > 0:
-		# 		for user_id in intersection:
-		# 			wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
+			payload = parse_obj_as(PayloadSchema, json.loads(message))
+
+			if payload.broadcast:
+				await wm.broadcast_all_users(jsonable_encoder(payload))
+			else:
+				r = sorted(payload.recipients)
+				active_user_in_websocket = sorted(key_list)
+				intersection = set(r).intersection(set(active_user_in_websocket))
+				if len(intersection) > 0:
+					for user_id in intersection:
+						await wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
 
 	pika_client = PikaClient(log_incoming_message)
 
