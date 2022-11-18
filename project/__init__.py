@@ -134,22 +134,14 @@ def create_app() -> FastAPI:
 				# 	{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id,
 				# 	                                    "client": jsonable_encoder(validated_user.user)}}
 				# )
-				# await self.websocket_manager.broadcast_user_joined(self.user_id)
+				await self.websocket_manager.broadcast_user_joined(self.user_id)
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
 			else:
 				# logger.info(f"Invalid token {token}")
 				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
 				await websocket.close()
 
-		# raise WebSocketDisconnect()
-		# return RedirectResponse("wss://notification.coster.id/_/unauthorized")
-
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
-			# if self.user_id is None:
-			# 	raise RuntimeError(
-			# 		"WebSocketManager.on_disconnect() called without a valid user_id"
-			# 	)
-			# else:
 			if self.user_id:
 				self.websocket_manager.remove_user(self.user_id)
 				await self.websocket_manager.broadcast_user_left(self.user_id)
@@ -182,9 +174,6 @@ def create_app() -> FastAPI:
 			# inspect(key_list, methods=False)
 			payload = parse_obj_as(PayloadSchema, message)
 
-			# inspect(key_list, methods=False)
-			# inspect(payload, methods=False)
-
 			if payload.broadcast:
 				inspect(key_list, methods=False)
 				inspect(payload.broadcast, methods=False)
@@ -197,7 +186,7 @@ def create_app() -> FastAPI:
 				if len(intersection) > 0:
 					for user_id in intersection:
 						wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
-						loop.create_task(wm.broadcast_by_user_id(user_id, jsonable_encoder(payload)))
+						loop.run_until_complete(wm.broadcast_by_user_id(user_id, jsonable_encoder(payload)))
 
 	pika_client = PikaClient(log_incoming_message)
 
@@ -221,11 +210,6 @@ def create_app() -> FastAPI:
 	async def startup():
 		task = loop.create_task(pika_client.consume(loop))
 		await task
-
-	# connection = await request.app.pika_client.consume(loop)
-	# channel = await connection.channel()
-	# queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
-	# await queue.consume(on_message, no_ack=False)
 
 	app.pika_client = pika_client
 	return app
