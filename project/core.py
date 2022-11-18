@@ -93,23 +93,19 @@ class PikaClient:
 		self.callback_queue = self.publish_queue.method.queue
 		self.response = None
 		self.process_callable = process_callable
-		inspect('Pika connection initialized')
 
 	async def consume(self, loop):
-		"""Setup message listener with the current running loop"""
-
 		connection = await connect_robust(host='192.168.217.3', port=5672, login='admin',
 		                                  password='Coster4dm1nP@ssw0rd', loop=loop)
 
 		channel = await connection.channel()
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
 		await queue.consume(self.process_incoming_message, no_ack=False, consumer_tag="notification")
-		logger.info('Established pika async listener')
 		return connection
 
 	async def process_incoming_message(self, message):
 		"""Processing incoming message from RabbitMQ"""
-		message.ack()
+		# message.ack()
 		body = message.body
 		if body:
 			self.process_callable(json.loads(body))
