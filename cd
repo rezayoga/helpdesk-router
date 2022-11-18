@@ -6,4 +6,4 @@ set -o nounset
 docker-compose down -v --remove-orphans
 git pull
 docker-compose up -d --build
-docker-compose exec web bash
+docker-compose logs -f web
