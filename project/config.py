@@ -13,7 +13,7 @@ class BaseConfig:
 
 	RABBITMQ_URL: str = os.environ.get("RABBITMQ_URL", f"amqp://admin:{quote_plus('Coster4dm1nP@ssw0rd')}@192.168.217.3:5672")
 
-	RABBITMQ_SERVICE_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_QUEUE_NAME", "service.queue.payload")
+	RABBITMQ_SERVICE_QUEUE_NAME = os.environ.get("RABBITMQ_SERVICE_QUEUE_NAME", "amqp.notification.service")
 
 
 class DevelopmentConfig(BaseConfig):
