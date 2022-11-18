@@ -175,13 +175,15 @@ def create_app() -> FastAPI:
 			return UserValidation(is_validated=False, user=None)
 
 	def log_incoming_message(message: dict):
-		inspect(message, methods=False)
+		# inspect(message, methods=False)
 		if wm is not None:
 			key_list = wm.users.keys()
-			inspect(key_list, methods=False)
+			# inspect(key_list, methods=False)
 			payload = parse_obj_as(PayloadSchema, json.loads(message))
 
 			if payload.broadcast:
+				inspect(key_list, methods=False)
+				inspect(payload.broadcast, methods=False)
 				wm.broadcast_all_users(jsonable_encoder(payload))
 			else:
 				r = sorted(payload.recipients)
