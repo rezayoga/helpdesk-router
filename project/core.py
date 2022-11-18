@@ -106,7 +106,7 @@ class PikaClient:
 		# inspect(connection, methods=True)
 
 		channel = await connection.channel()
-		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=True)
+		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
 		await queue.consume(self.process_incoming_message, no_ack=False, consumer_tag="notification")
 		logger.info('Established pika async listener')
 		return connection
@@ -116,7 +116,7 @@ class PikaClient:
 		message.ack()
 		body = message.body
 		if body:
-			inspect(json.loads(body), methods=True)
+			# inspect(json.loads(body), methods=True)
 			self.process_callable(json.loads(body))
 
 		return message

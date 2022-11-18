@@ -11,6 +11,7 @@ from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 from fastapi.websockets import WebSocket
 from pydantic import parse_obj_as
+from rich import inspect
 from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Receive, Scope, Send
@@ -102,7 +103,7 @@ def create_app() -> FastAPI:
 	"""
 
 	def log_incoming_message(message: dict):
-		logger.info(f"Received message: {message}")
+		inspect(message, methods=False)
 
 	pika_client = PikaClient(log_incoming_message)
 
