@@ -105,7 +105,7 @@ class PikaClient:
 
 	async def process_incoming_message(self, message):
 		"""Processing incoming message from RabbitMQ"""
-		message.ack()
+		# message.ack()
 		body = message.body
 		if body:
 			self.process_callable(json.loads(body))
