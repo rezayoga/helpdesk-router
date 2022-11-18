@@ -101,24 +101,6 @@ def create_app() -> FastAPI:
 	</html>
 	"""
 
-	async def log_incoming_message(message: dict):
-		inspect(message, methods=False)
-		if wm is not None:
-			key_list = wm.users.keys()
-			payload = parse_obj_as(PayloadSchema, json.loads(message))
-
-			if payload.broadcast:
-				await wm.broadcast_all_users(jsonable_encoder(payload))
-			else:
-				r = sorted(payload.recipients)
-				active_user_in_websocket = sorted(key_list)
-				intersection = set(r).intersection(set(active_user_in_websocket))
-				if len(intersection) > 0:
-					for user_id in intersection:
-						await wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
-
-	pika_client = PikaClient(log_incoming_message)
-
 	@app.get("/")
 	async def get():
 		return HTMLResponse(html_broadcast)
@@ -190,6 +172,24 @@ def create_app() -> FastAPI:
 				logger.info(f"User {u} is valid {type(u)}")
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
+
+	async def log_incoming_message(message: dict):
+		inspect(message, methods=False)
+		if wm is not None:
+			key_list = wm.users.keys()
+			payload = parse_obj_as(PayloadSchema, json.loads(message))
+
+			if payload.broadcast:
+				await wm.broadcast_all_users(jsonable_encoder(payload))
+			else:
+				r = sorted(payload.recipients)
+				active_user_in_websocket = sorted(key_list)
+				intersection = set(r).intersection(set(active_user_in_websocket))
+				if len(intersection) > 0:
+					for user_id in intersection:
+						await wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
+
+	pika_client = PikaClient(log_incoming_message)
 
 	async def on_message(message: AbstractIncomingMessage) -> None:
 		async with message.process():
