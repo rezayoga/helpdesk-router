@@ -173,21 +173,21 @@ def create_app() -> FastAPI:
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
 
-	async def log_incoming_message(message: dict):
+	def log_incoming_message(message: dict):
 		inspect(message, methods=False)
-		# if wm is not None:
-		# 	key_list = wm.users.keys()
-		# 	payload = parse_obj_as(PayloadSchema, json.loads(message))
-		#
-		# 	if payload.broadcast:
-		# 		await wm.broadcast_all_users(jsonable_encoder(payload))
-		# 	else:
-		# 		r = sorted(payload.recipients)
-		# 		active_user_in_websocket = sorted(key_list)
-		# 		intersection = set(r).intersection(set(active_user_in_websocket))
-		# 		if len(intersection) > 0:
-		# 			for user_id in intersection:
-		# 				await wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
+		if wm is not None:
+			key_list = wm.users.keys()
+			payload = parse_obj_as(PayloadSchema, json.loads(message))
+
+			if payload.broadcast:
+				wm.broadcast_all_users(jsonable_encoder(payload))
+			else:
+				r = sorted(payload.recipients)
+				active_user_in_websocket = sorted(key_list)
+				intersection = set(r).intersection(set(active_user_in_websocket))
+				if len(intersection) > 0:
+					for user_id in intersection:
+						wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
 
 	pika_client = PikaClient(log_incoming_message)
 
