@@ -103,7 +103,7 @@ class PikaClient:
 		connection = await connect_robust(host='192.168.217.3', port=5672, login='admin',
 		                                  password='Coster4dm1nP@ssw0rd', loop=loop)
 
-		inspect(connection, methods=True)
+		# inspect(connection, methods=True)
 
 		channel = await connection.channel()
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
@@ -116,7 +116,7 @@ class PikaClient:
 		message.ack()
 		body = message.body
 		if body:
-			inspect(json.loads(body), methods=True)
+			# inspect(json.loads(body), methods=True)
 			self.process_callable(json.loads(body))
 
 		return message
