@@ -101,7 +101,7 @@ def create_app() -> FastAPI:
 	</html>
 	"""
 
-	def log_incoming_message(message: dict):
+	async def log_incoming_message(message: dict):
 		inspect(message, methods=False)
 		if wm is not None:
 			key_list = wm.users.keys()
