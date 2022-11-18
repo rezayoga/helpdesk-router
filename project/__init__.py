@@ -202,9 +202,6 @@ def create_app() -> FastAPI:
 	@app.get('/consume-payload-from-rmq')
 	async def consume_payload_from_rmq(request: Request):
 		connection = await request.app.pika_client.consume(loop)
-		channel = await connection.channel()
-		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True)
-		await queue.consume(on_message, no_ack=False)
 		return {"status": "consuming"}
 
 	async def on_message(message: AbstractIncomingMessage) -> None:
@@ -228,6 +225,7 @@ def create_app() -> FastAPI:
 		await pika_client.init_connection(loop)
 		task = loop.create_task(pika_client.consume(loop))
 		await task
+
 
 		# connection = await request.app.pika_client.consume(loop)
 		# channel = await connection.channel()

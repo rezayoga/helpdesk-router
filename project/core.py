@@ -9,7 +9,7 @@ from aio_pika import connect_robust
 from aio_pika.abc import AbstractRobustConnection
 from fastapi.encoders import jsonable_encoder
 from fastapi.websockets import WebSocket
-
+from rich import inspect
 from project import settings
 from project.schemas import Payload as PayloadSchema, User
 
@@ -98,8 +98,13 @@ class PikaClient:
 
 	async def consume(self, loop):
 		"""Setup message listener with the current running loop"""
+
+
 		connection = await connect_robust(host='192.168.217.3', port=5672, login='admin',
 		                                  password='Coster4dm1nP@ssw0rd', loop=loop)
+
+		inspect(connection, methods=True)
+
 		channel = await connection.channel()
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
 		await queue.consume(self.process_incoming_message, no_ack=False, consumer_tag="notification")
@@ -111,6 +116,8 @@ class PikaClient:
 		body = message.body
 		if body:
 			self.process_callable(json.loads(body))
+
+		return message
 
 	async def publish_async(self, message: dict):
 		"""Method to publish message to RabbitMQ"""
