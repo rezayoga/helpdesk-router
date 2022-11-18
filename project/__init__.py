@@ -179,10 +179,10 @@ def create_app() -> FastAPI:
 		if wm is not None:
 			key_list = wm.users.keys()
 			# inspect(key_list, methods=False)
-			payload = parse_obj_as(PayloadSchema, json.loads(message))
+			# payload = parse_obj_as(PayloadSchema, json.loads(message))
 
 			inspect(key_list, methods=False)
-			inspect(payload, methods=False)
+			inspect(message, methods=False)
 
 			# if payload.broadcast:
 			# 	inspect(key_list, methods=False)
