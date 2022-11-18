@@ -1,9 +1,7 @@
 import json
 import logging
-import uuid
 from typing import Dict, Optional
 
-import aio_pika
 import pika
 from aio_pika import connect_robust
 from fastapi.encoders import jsonable_encoder
@@ -95,15 +93,13 @@ class PikaClient:
 		self.callback_queue = self.publish_queue.method.queue
 		self.response = None
 		self.process_callable = process_callable
-		logger.info('Pika connection initialized')
+		inspect('Pika connection initialized')
 
 	async def consume(self, loop):
 		"""Setup message listener with the current running loop"""
 
 		connection = await connect_robust(host='192.168.217.3', port=5672, login='admin',
 		                                  password='Coster4dm1nP@ssw0rd', loop=loop)
-
-		# inspect(connection, methods=True)
 
 		channel = await connection.channel()
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
@@ -116,34 +112,7 @@ class PikaClient:
 		message.ack()
 		body = message.body
 		if body:
-			# inspect(json.loads(body), methods=True)
 			self.process_callable(json.loads(body))
-
-		return message
-
-	async def publish_async(self, message: dict):
-		"""Method to publish message to RabbitMQ"""
-		async with self.connection:
-			channel = await self.connection.channel()
-			await channel.default_exchange.publish(
-				aio_pika.Message(
-					body=json.dumps(message).encode(),
-					delivery_mode=aio_pika.DeliveryMode.PERSISTENT
-				),
-				routing_key=settings.RABBITMQ_SERVICE_QUEUE_NAME
-			)
-
-	def publish(self, message: dict):
-		"""Method to publish message to RabbitMQ"""
-		self.channel.basic_publish(
-			exchange='',
-			routing_key=self.publish_queue_name,
-			properties=pika.BasicProperties(
-				reply_to=self.callback_queue,
-				correlation_id=str(uuid.uuid4())
-			),
-			body=json.dumps(message)
-		)
 
 	def close(self):
 		"""Close connection to RabbitMQ"""
