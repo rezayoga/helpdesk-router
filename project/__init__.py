@@ -141,7 +141,7 @@ def create_app() -> FastAPI:
 				# 	{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id,
 				# 	                                    "client": jsonable_encoder(validated_user.user)}}
 				# )
-				await self.websocket_manager.broadcast_user_joined(self.user_id)
+				# await self.websocket_manager.broadcast_user_joined(self.user_id)
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
 			else:
 				logger.info(f"Invalid token {token}")
