@@ -41,7 +41,7 @@ def create_app() -> FastAPI:
 		              "name": "Reza Yogaswara",
 		              "url": "https://me.rezayogaswara.dev/",
 		              "email": "reza.yoga@gmail.com",
-	              })
+	              }, docs_url=None, redoc_url=None)
 	app.add_middleware(
 		CORSMiddleware, allow_origins=["*"], allow_headers=["*"], allow_methods=["*"]
 	)
