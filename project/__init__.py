@@ -188,7 +188,7 @@ def create_app() -> FastAPI:
 				intersection = set(r).intersection(set(active_user_in_websocket))
 				if len(intersection) > 0:
 					for user_id in intersection:
-						wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
+						# wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
 						loop.run_until_complete(wm.broadcast_by_user_id(user_id, jsonable_encoder(payload)))
 
 	pika_client = PikaClient(log_incoming_message)
