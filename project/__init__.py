@@ -175,7 +175,7 @@ def create_app() -> FastAPI:
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
 
-	def log_incoming_message(message: dict):
+	async def log_incoming_message(message: dict):
 		# inspect(message, methods=False)
 		if wm is not None:
 			key_list = wm.users.keys()
@@ -188,14 +188,14 @@ def create_app() -> FastAPI:
 			if payload.broadcast:
 				inspect(key_list, methods=False)
 				inspect(payload.broadcast, methods=False)
-				wm.broadcast_all_users(jsonable_encoder(payload))
+				await wm.broadcast_all_users(jsonable_encoder(payload))
 			else:
 				r = sorted(payload.recipients)
 				active_user_in_websocket = sorted(key_list)
 				intersection = set(r).intersection(set(active_user_in_websocket))
 				if len(intersection) > 0:
 					for user_id in intersection:
-						wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
+						await wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
 
 	pika_client = PikaClient(log_incoming_message)
 
