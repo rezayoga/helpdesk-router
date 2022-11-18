@@ -145,11 +145,12 @@ def create_app() -> FastAPI:
 		# return RedirectResponse("wss://notification.coster.id/_/unauthorized")
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
-			if self.user_id is None:
-				raise RuntimeError(
-					"WebSocketManager.on_disconnect() called without a valid user_id"
-				)
-			else:
+			# if self.user_id is None:
+			# 	raise RuntimeError(
+			# 		"WebSocketManager.on_disconnect() called without a valid user_id"
+			# 	)
+			# else:
+			if self.user_id:
 				self.websocket_manager.remove_user(self.user_id)
 				await self.websocket_manager.broadcast_user_left(self.user_id)
 
