@@ -70,12 +70,12 @@ def create_app() -> FastAPI:
 	        <h1 id="h1-title">Clients</h1>
 	        <select user_id="select_token" style="width:30%" onchange="add_user(this)">
 	          <option selected="selected" value="-">Select Token</option>
-			  <option value="jfD6puH8TnKLbxBtopU8RQ">Token #1 (Valid - user.B_r6qBs8S8eWwK9FOltCyA)</option>
-			  <option value="jfD6puH8TnKLbxBtopU8RQ">Token #2 (Valid - user.jfD6puH8TnKLbxBtopU8RQ)</option>
-			  <option value="2LsA4HqVS5ucd4wTdmpJgQ">Token #3 (Valid - user.2LsA4HqVS5ucd4wTdmpJgQ)</option>
-			  <option value="GLBHlkW3QSqSDgZV3sKZmA">Token #4 (Valid - user.GLBHlkW3QSqSDgZV3sKZmA)</option>
-			  <option value="4a8a08f09d37b73795649038408b5f33">Token #5 (Invalid)</option>
-			  <option value="123/undefined">Token #6 (Invalid)</option>
+			  <option value="B_r6qBs8S8eWwK9FOltCyA">Token #1 (Valid - B_r6qBs8S8eWwK9FOltCyA)</option>
+			  <option value="jfD6puH8TnKLbxBtopU8RQ">Token #2 (Valid - jfD6puH8TnKLbxBtopU8RQ)</option>
+			  <option value="2LsA4HqVS5ucd4wTdmpJgQ">Token #3 (Valid - 2LsA4HqVS5ucd4wTdmpJgQ)</option>
+			  <option value="GLBHlkW3QSqSDgZV3sKZmA">Token #4 (Valid - GLBHlkW3QSqSDgZV3sKZmA)</option>
+			  <option value="4a8a08f09d37b73795649038408b5f33">Token #5 (Invalid - 4a8a08f09d37b73795649038408b5f33)</option>
+			  <option value="123/undefined">Token #6 (Invalid - 123/undefined)</option>
 			</select>
 	        <hr />
 	        <div id="token"></div>
