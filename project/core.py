@@ -102,15 +102,15 @@ class PikaClient:
 		                                  password='Coster4dm1nP@ssw0rd', loop=loop)
 		channel = await connection.channel()
 		queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
-		# await queue.consume(self.process_incoming_message, no_ack=False)
+		await queue.consume(self.process_incoming_message, no_ack=False, consumer_tag="notification")
 		return connection
 
-	# async def process_incoming_message(self, message):
-	# 	"""Processing incoming message from RabbitMQ"""
-	# 	message.ack()
-	# 	body = message.body
-	# 	if body:
-	# 		self.process_callable(json.loads(body))
+	async def process_incoming_message(self, message):
+		"""Processing incoming message from RabbitMQ"""
+		message.ack()
+		body = message.body
+		if body:
+			self.process_callable(json.loads(body))
 
 	async def publish_async(self, message: dict):
 		"""Method to publish message to RabbitMQ"""
