@@ -26,7 +26,7 @@ class WebSocketManager:
 		if user_id in self._users:
 			# raise ValueError(f"User {user_id} is already in the websocket_manager")
 			self.remove_user(user_id)
-		logger.info("Adding user %s to websocket_manager", user_id)
+		# logger.info("Adding user %s to websocket_manager", user_id)
 		self._users[user_id] = websocket
 		self._user_meta[user_id] = User(
 			id=user_id, client_id=client_id
@@ -35,7 +35,7 @@ class WebSocketManager:
 	def remove_user(self, user_id: str):
 		if user_id not in self._users:
 			raise ValueError(f"User {user_id} is not in the websocket_manager")
-		logger.info("Removing user %s from websocket_manager", user_id)
+		# logger.info("Removing user %s from websocket_manager", user_id)
 		# del self._users[user_id]
 		# del self._user_meta[user_id]
 		# await self._users[user_id].close()
