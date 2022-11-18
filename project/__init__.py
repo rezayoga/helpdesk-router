@@ -70,13 +70,12 @@ def create_app() -> FastAPI:
 	        <h1 id="h1-title">Clients</h1>
 	        <select user_id="select_token" style="width:30%" onchange="add_user(this)">
 	          <option selected="selected" value="-">Select Token</option>
-			  <option value="user.jfD6puH8TnKLbxBtopU8RQ">Token #1 (Valid - user.B_r6qBs8S8eWwK9FOltCyA)</option>
-			  <option value="user.jfD6puH8TnKLbxBtopU8RQ">Token #2 (Valid - user.jfD6puH8TnKLbxBtopU8RQ)</option>
-			  <option value="user.2LsA4HqVS5ucd4wTdmpJgQ">Token #3 (Valid - user.2LsA4HqVS5ucd4wTdmpJgQ)</option>
-			  <option value="token.b4825c7863c411ed8b03c55baead42b3">Token #4 (Valid - token.b4825c7863c411ed8b03c55baead42b3)</option>
-			  <option value="user.GLBHlkW3QSqSDgZV3sKZmA">Token #5 (Valid - user.GLBHlkW3QSqSDgZV3sKZmA)</option>
-			  <option value="user.4a8a08f09d37b73795649038408b5f33">Token #6 (Invalid)</option>
-			  <option value="user.123/undefined">Token #7 (Invalid)</option>
+			  <option value="jfD6puH8TnKLbxBtopU8RQ">Token #1 (Valid - user.B_r6qBs8S8eWwK9FOltCyA)</option>
+			  <option value="jfD6puH8TnKLbxBtopU8RQ">Token #2 (Valid - user.jfD6puH8TnKLbxBtopU8RQ)</option>
+			  <option value="2LsA4HqVS5ucd4wTdmpJgQ">Token #3 (Valid - user.2LsA4HqVS5ucd4wTdmpJgQ)</option>
+			  <option value="GLBHlkW3QSqSDgZV3sKZmA">Token #4 (Valid - user.GLBHlkW3QSqSDgZV3sKZmA)</option>
+			  <option value="4a8a08f09d37b73795649038408b5f33">Token #5 (Invalid)</option>
+			  <option value="123/undefined">Token #6 (Invalid)</option>
 			</select>
 	        <hr />
 	        <div id="token"></div>
@@ -138,10 +137,10 @@ def create_app() -> FastAPI:
 			if validated_user.is_validated:
 				self.user_id = validated_user.user.user.id
 				logger.info(f"User {self.user_id} connected")
-				await websocket.send_json(
-					{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id,
-					                                    "client": jsonable_encoder(validated_user.user)}}
-				)
+				# await websocket.send_json(
+				# 	{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id,
+				# 	                                    "client": jsonable_encoder(validated_user.user)}}
+				# )
 				await self.websocket_manager.broadcast_user_joined(self.user_id)
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
 			else:
@@ -169,7 +168,7 @@ def create_app() -> FastAPI:
 		@staticmethod
 		async def validate_auth_token(auth_token: str) -> UserValidation:
 			logger.info(f"Validating token: {auth_token}")
-			user = await redis.get(auth_token)
+			user = await redis.get(f"user.{auth_token}")
 
 			if user is not None:
 				# logger.info(f"User {json.loads(user)} is valid {type(json.loads(user))}")
