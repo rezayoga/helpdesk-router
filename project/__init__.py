@@ -172,9 +172,10 @@ def create_app() -> FastAPI:
 	def log_incoming_message(message: dict):
 		if wm is not None:
 			key_list = wm.users.keys()
-			inspect(message, methods=False)
-			inspect(key_list, methods=False)
+			# inspect(message, methods=False)
+			# inspect(key_list, methods=False)
 			payload = parse_obj_as(PayloadSchema, message)
+			inspect(payload, methods=False)
 
 	pika_client = PikaClient(log_incoming_message)
 
