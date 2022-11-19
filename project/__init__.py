@@ -10,6 +10,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
 from fastapi.websockets import WebSocket
 from pydantic import parse_obj_as
+from rich import inspect
 from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Receive, Scope, Send
@@ -169,10 +170,10 @@ def create_app() -> FastAPI:
 			return UserValidation(is_validated=False, user=None)
 
 	def log_incoming_message(message: dict):
-		# inspect(message, methods=False)
 		if wm is not None:
 			key_list = wm.users.keys()
-			# inspect(key_list, methods=False)
+			inspect(message, methods=False)
+			inspect(key_list, methods=False)
 			payload = parse_obj_as(PayloadSchema, message)
 
 	pika_client = PikaClient(log_incoming_message)
