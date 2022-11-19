@@ -10,7 +10,6 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
 from fastapi.websockets import WebSocket
 from pydantic import parse_obj_as
-from rich import inspect
 from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Receive, Scope, Send
@@ -176,25 +175,7 @@ def create_app() -> FastAPI:
 			# inspect(key_list, methods=False)
 			payload = parse_obj_as(PayloadSchema, message)
 
-			inspect(payload, methods=False)
-
 	pika_client = PikaClient(log_incoming_message)
-
-	async def on_message(message: AbstractIncomingMessage) -> None:
-		async with message.process():
-			if wm is not None:
-				key_list = wm.users.keys()
-				payload = parse_obj_as(PayloadSchema, json.loads(message.body))
-
-				if payload.broadcast:
-					await wm.broadcast_all_users(jsonable_encoder(payload))
-				else:
-					r = sorted(payload.recipients)
-					active_user_in_websocket = sorted(key_list)
-					intersection = set(r).intersection(set(active_user_in_websocket))
-					if len(intersection) > 0:
-						for user_id in intersection:
-							await wm.broadcast_by_user_id(user_id, jsonable_encoder(payload))
 
 	@app.on_event("startup")
 	async def startup():
