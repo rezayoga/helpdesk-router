@@ -128,7 +128,7 @@ def create_app() -> FastAPI:
 			validated_user = await NotifierApp.validate_auth_token(token)
 			if validated_user.is_validated:
 				self.user_id = validated_user.user.user.id
-				logger.info(f"User {self.user_id} connected")
+				inspect(f"User {self.user_id} connected", methods=False)
 				# await websocket.send_json(
 				# 	{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id,
 				# 	                                    "client": jsonable_encoder(validated_user.user)}}
@@ -165,7 +165,7 @@ def create_app() -> FastAPI:
 				# u = UserSchema(**json.loads(user.decode('utf-8')))
 				# u = UserSchema.parse_obj(json.loads(user.decode('utf-8')))
 				u = parse_obj_as(UserSchema, json.loads(user.decode('utf-8')))
-				logger.info(f"User {u} is valid {type(u)}")
+				inspect(f"User {u} is valid {type(u)}", methods=False)
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
 
