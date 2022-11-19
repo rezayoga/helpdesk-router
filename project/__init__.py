@@ -25,7 +25,7 @@ redis = aioredis.from_url(
 	"redis://192.168.217.2:6379/0", password="Cost3rv3Redi5P@ssw0rd"
 )
 # setup loggers
-logging.config.fileConfig('logging.conf', disable_existing_loggers=True)
+logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 
 # get root logger
 logger = logging.getLogger(__name__)  # __name__ = "project"
