@@ -4,7 +4,6 @@ import logging.config
 from typing import Optional
 
 import aioredis
-from aio_pika.abc import AbstractIncomingMessage
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
@@ -176,6 +175,8 @@ def create_app() -> FastAPI:
 			# inspect(key_list, methods=False)
 			payload = parse_obj_as(PayloadSchema, message)
 			inspect(payload, methods=False)
+			if payload.broadcast:
+				await wm.broadcast_all_users(jsonable_encoder(payload))
 
 	pika_client = PikaClient(log_incoming_message)
 
