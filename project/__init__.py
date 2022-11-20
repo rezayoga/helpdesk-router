@@ -176,7 +176,7 @@ def create_app() -> FastAPI:
 			payload = parse_obj_as(PayloadSchema, message)
 			inspect(payload, methods=False)
 			if payload.broadcast:
-				await wm.broadcast_all_users(jsonable_encoder(payload))
+				loop.create_task(wm.broadcast_all_users(jsonable_encoder(payload)))
 
 	pika_client = PikaClient(log_incoming_message)
 
