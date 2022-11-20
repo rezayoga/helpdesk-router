@@ -177,6 +177,13 @@ def create_app() -> FastAPI:
 			inspect(payload, methods=False)
 			if payload.broadcast:
 				loop.create_task(wm.broadcast_all_users(jsonable_encoder(payload)))
+			else:
+				r = sorted(payload.recipients)
+				active_user_in_websocket = sorted(key_list)
+				intersection = set(r).intersection(set(active_user_in_websocket))
+				if len(intersection) > 0:
+					for user_id in intersection:
+						loop.create_task(wm.broadcast_by_user_id(user_id, jsonable_encoder(payload)))
 
 	pika_client = PikaClient(log_incoming_message)
 
