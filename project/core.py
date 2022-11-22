@@ -39,9 +39,9 @@ class WebSocketManager:
 		# del self._users[user_id]
 		# del self._user_meta[user_id]
 		# await self._users[user_id].close()
-		# if user_id in self._users:
-		self._users.pop(user_id)
-		self._user_meta.pop(user_id)
+		if user_id in self._users:
+			self._users.pop(user_id)
+			self._user_meta.pop(user_id)
 
 	def get_user(self, user_id: str) -> Optional[User]:
 		"""Get metadata on a user.
