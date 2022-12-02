@@ -146,7 +146,8 @@ def create_app() -> FastAPI:
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id:
 				# await self.websocket_manager.broadcast_user_left(self.user_id)
-				self.websocket_manager.remove_user(self.user_id)
+				# self.websocket_manager.remove_user(self.user_id)
+				pass
 
 		async def on_receive(self, _websocket: WebSocket, payload: PayloadSchema):
 			if self.user_id is None:
