@@ -139,8 +139,9 @@ def create_app() -> FastAPI:
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
 			else:
 				# logger.info(f"Invalid token {token}")
-				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
-				await websocket.close()
+				# await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
+				# await websocket.close()
+				pass
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id:
@@ -152,7 +153,7 @@ def create_app() -> FastAPI:
 				raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
 			if not isinstance(payload, str):
 				raise ValueError(f"WebSocketManager.on_receive() passed unhandleable data: {payload}")
-			await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
+			# await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
 
 		@staticmethod
 		async def validate_auth_token(auth_token: str) -> UserValidation:
