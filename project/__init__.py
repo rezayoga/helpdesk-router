@@ -137,6 +137,7 @@ def create_app() -> FastAPI:
 				# )
 				# await self.websocket_manager.broadcast_user_joined(self.user_id)
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
+				exit()
 			else:
 				# logger.info(f"Invalid token {token}")
 				# await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
