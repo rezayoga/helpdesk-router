@@ -164,7 +164,7 @@ def create_app() -> FastAPI:
 				# u = UserSchema(**json.loads(user.decode('utf-8')))
 				# u = UserSchema.parse_obj(json.loads(user.decode('utf-8')))
 				u = parse_obj_as(UserSchema, json.loads(user.decode('utf-8')))
-				# inspect(f"User {u} is valid {type(u)}", methods=False)
+				inspect(f"User {u} is valid {type(u)}", methods=False)
 				return UserValidation(is_validated=True, user=u)
 			return UserValidation(is_validated=False, user=None)
 
