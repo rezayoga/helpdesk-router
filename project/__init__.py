@@ -132,29 +132,27 @@ def create_app() -> FastAPI:
 				# 	{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id,
 				# 	                                    "client": jsonable_encoder(validated_user.user)}}
 				# )
-				# await websocket.send_json(
-				# 	{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id}}
-				# )
-				# await self.websocket_manager.broadcast_user_joined(self.user_id)
+				await websocket.send_json(
+					{"type": "WEBSOCKET_JOIN", "data": {"id": self.user_id}}
+				)
+				await self.websocket_manager.broadcast_user_joined(self.user_id)
 				self.websocket_manager.add_user(self.user_id, validated_user.user.user.id, websocket)
 			else:
-				logger.info(f"Invalid token {token}")
-				# await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
-				# await websocket.close()
-				pass
+				# logger.info(f"Invalid token {token}")
+				await websocket.send_json({"type": "AUTH_ERROR", "data": {"error": "Invalid token"}})
+				await websocket.close()
 
 		async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
 			if self.user_id:
 				# await self.websocket_manager.broadcast_user_left(self.user_id)
-				# self.websocket_manager.remove_user(self.user_id)
-				pass
+				self.websocket_manager.remove_user(self.user_id)
 
 		async def on_receive(self, _websocket: WebSocket, payload: PayloadSchema):
 			if self.user_id is None:
 				raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
 			if not isinstance(payload, str):
 				raise ValueError(f"WebSocketManager.on_receive() passed unhandleable data: {payload}")
-			# await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
+			await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
 
 		@staticmethod
 		async def validate_auth_token(auth_token: str) -> UserValidation:
