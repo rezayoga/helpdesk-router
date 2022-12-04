@@ -13,6 +13,7 @@ from rich import inspect
 from starlette.endpoints import WebSocketEndpoint
 from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette_prometheus import metrics, PrometheusMiddleware
 
 from project.config import settings
 from project.core import WebSocketManager, PikaClient
@@ -41,6 +42,8 @@ def create_app() -> FastAPI:
 		              "url": "https://me.rezayogaswara.dev/",
 		              "email": "reza.yoga@gmail.com",
 	              }, docs_url=None, redoc_url=None)
+	app.add_middleware(PrometheusMiddleware)
+	app.add_route("/metrics", metrics)
 	app.add_middleware(
 		CORSMiddleware, allow_origins=["*"], allow_headers=["*"], allow_methods=["*"]
 	)
