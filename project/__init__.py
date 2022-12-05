@@ -1,7 +1,7 @@
 import asyncio
 import json
 import logging.config
-from typing import Optional
+from typing import Optional, Union
 
 import aioredis
 from fastapi import FastAPI
@@ -17,7 +17,7 @@ from starlette_prometheus import metrics, PrometheusMiddleware
 
 from project.config import settings
 from project.core import WebSocketManager, PikaClient
-from project.schemas import User as UserSchema, Payload as PayloadSchema, UserValidation
+from project.schemas import User as UserSchema, Payload as PayloadSchema, UserValidation, HeartBeat as HeartBeatSchema
 
 # redis = aioredis.from_url(os.environ.get('result_backend', "redis://reza:reza1985@103.41.204.222:6379/15"))
 # redis = aioredis.from_url(f"redis://:{quote_plus('Cost3rv3Redi5P@ssw0rd').replace('%', '%%')}@192.168.217.2:6379/0")
@@ -150,12 +150,17 @@ def create_app() -> FastAPI:
 				# await self.websocket_manager.broadcast_user_left(self.user_id)
 				self.websocket_manager.remove_user(self.user_id)
 
-		async def on_receive(self, _websocket: WebSocket, payload: PayloadSchema):
+		async def on_receive(self, _websocket: WebSocket, payload: Union[PayloadSchema, HeartBeatSchema]):
 			if self.user_id is None:
 				raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
+			else:
+				await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
+
 			if not isinstance(payload, str):
 				raise ValueError(f"WebSocketManager.on_receive() passed unhandleable data: {payload}")
-			await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
+			# await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
+			else:
+				inspect(payload, methods=True)
 
 		@staticmethod
 		async def validate_auth_token(auth_token: str) -> UserValidation:

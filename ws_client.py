@@ -1,15 +1,18 @@
-import asyncio
+import json
 
+import asyncio
 import websockets
 
 
 async def send_receive():
 	async with websockets.connect(
-			'wss://notifier.rezayogaswara.dev/notification/user1.0cc175b9c0f1b6a831c399e269772661',
+			'wss://notification.coster.id/notification/B_r6qBs8S8eWwK9FOltCyA',
 			ping_interval=5,
 			ping_timeout=20) as websocket:
 		for i in range(10):
-			await websocket.send(str(i))
+			await websocket.send(json.dumps({
+				"message": "ping"
+			}))
 			await asyncio.sleep(0.1)
 			msg = await websocket.recv()
 			print(msg)
