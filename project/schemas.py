@@ -37,10 +37,6 @@ class UserValidation(BaseModel):
 	user: Optional[User] = None
 
 
-class HeartBeat(BaseModel):
-	message: str = None
-
-
 class Payload(BaseModel):
 	broadcast: bool
 	recipients: List[str]

@@ -11,7 +11,11 @@ async def send_receive():
 			ping_timeout=20) as websocket:
 		for i in range(10):
 			await websocket.send(json.dumps({
-				"message": "ping"
+				"broadcast": False,
+				"recipients": ["f625487c63c211ed8b03c55baead42b3"],
+				"message": {"data": [
+					{"message": "ping"}
+				]}
 			}))
 			await asyncio.sleep(0.1)
 			msg = await websocket.recv()
