@@ -155,11 +155,12 @@ def create_app() -> FastAPI:
 				raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
 			else:
 				await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
+				inspect(payload, methods=True)
 				if not isinstance(payload, PayloadSchema):
 					raise ValueError(f"WebSocketManager.on_receive() passed unhandleable data: {payload}")
 				# await self.websocket_manager.broadcast_by_user_id(self.user_id, payload)
-				else:
-					inspect(payload, methods=True)
+				# else:
+				# 	inspect(payload, methods=True)
 
 		@staticmethod
 		async def validate_auth_token(auth_token: str) -> UserValidation:
