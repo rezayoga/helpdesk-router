@@ -7,8 +7,8 @@ import websockets
 async def send_receive():
 	async with websockets.connect(
 			'wss://notification.coster.id/notification/B_r6qBs8S8eWwK9FOltCyA',
-			ping_interval=5,
-			ping_timeout=20) as websocket:
+			ping_interval=10,
+			ping_timeout=5) as websocket:
 		for i in range(10):
 			await websocket.send(json.dumps({
 				"broadcast": False,
