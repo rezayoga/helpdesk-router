@@ -36,9 +36,9 @@ wm: WebSocketManager = None
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Helpdesk Notification Service",
+    app = FastAPI(title="Coster V3 Notification Service",
                   version=settings.APPLICATION_VERSION,
-                  description="Helpdesk Notification Service",
+                  description="Coster V3 Notification Service",
                   # contact={
                   #     "name": "Reza Yogaswara",
                   #     "url": "https://me.rezayogaswara.dev/",
