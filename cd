@@ -7,4 +7,4 @@ docker-compose down -v --remove-orphans
 git pull
 docker-compose up -d --build
 systemctl restart nginx.service
-docker-compose logs -f web
+#docker-compose logs -f web
